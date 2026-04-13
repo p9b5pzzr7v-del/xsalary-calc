@@ -31,7 +31,7 @@
   --teal-border:#9fe4dc;
   --shadow-sm:0 1px 4px rgba(0,0,0,0.06);
   --shadow-md:0 4px 18px rgba(0,0,0,0.08);
-  --r:14px;--r-sm:10px;--r-lg:20px;
+  --r:4px;--r-sm:4px;--r-lg:4px;
 }
 
 body{
@@ -54,7 +54,7 @@ body{
   background:var(--red-soft);border:1px solid #ffd0c2;
   color:var(--red);font-size:0.7rem;font-weight:700;
   letter-spacing:0.06em;padding:4px 12px;
-  border-radius:99px;margin-bottom:14px;text-transform:uppercase;
+  border-radius:4px;margin-bottom:14px;text-transform:uppercase;
 }
 .hero h1{
   font-size:clamp(1.5rem,5.5vw,2rem);
@@ -102,7 +102,7 @@ body{
 .card.disabled{opacity:0.3;pointer-events:none;}
 .card-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
 .card-icon{
-  width:32px;height:32px;border-radius:9px;
+  width:32px;height:32px;border-radius:4px;
   display:flex;align-items:center;justify-content:center;
   font-size:0.95rem;flex-shrink:0;
 }
@@ -131,7 +131,7 @@ body{
   font-size:0.74rem;font-weight:700;color:var(--text2);margin-bottom:5px;
 }
 .tip{
-  width:14px;height:14px;border-radius:50%;
+  width:14px;height:14px;
   background:var(--surface2);color:var(--text3);
   font-size:0.58rem;font-weight:700;
   display:inline-flex;align-items:center;justify-content:center;
@@ -142,7 +142,7 @@ body{
   position:absolute;bottom:calc(100% + 6px);left:50%;
   transform:translateX(-50%);
   background:var(--text);color:#fff;
-  font-size:0.66rem;padding:4px 8px;border-radius:6px;
+  font-size:0.66rem;padding:4px 8px;border-radius:4px;
   white-space:nowrap;z-index:10;pointer-events:none;font-weight:400;
 }
 .field input{
@@ -158,7 +158,7 @@ body{
 /* ratio badge */
 .ratio-badge{
   display:none;align-items:center;gap:6px;
-  border-radius:7px;padding:5px 10px;margin-top:7px;
+  border-radius:4px;padding:5px 10px;margin-top:7px;
   font-size:0.71rem;font-weight:700;
   background:var(--blue-soft);border:1px solid #c2daf5;color:var(--blue);
 }
@@ -254,15 +254,15 @@ body{
 .gauge-pct.green{color:var(--green);}
 .gauge-pct.yellow{color:var(--yellow);}
 .gauge-pct.red{color:var(--red);}
-.gauge-track{height:8px;background:var(--surface2);border-radius:99px;position:relative;}
-.gauge-fill{height:100%;border-radius:99px;transition:width 1s cubic-bezier(.22,.68,0,1.1);}
+.gauge-track{height:8px;background:var(--surface2);border-radius:4px;position:relative;}
+.gauge-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.22,.68,0,1.1);}
 .gauge-fill.green{background:linear-gradient(90deg,#33b89a,#06d6a0);}
 .gauge-fill.yellow{background:linear-gradient(90deg,#e8940a,#ffd166);}
 .gauge-fill.red{background:linear-gradient(90deg,var(--red),#ff7b5a);}
 .gauge-fill::after{
   content:'';position:absolute;right:0;top:50%;
   transform:translate(50%,-50%);
-  width:12px;height:12px;border-radius:50%;
+  width:12px;height:12px;
   background:inherit;box-shadow:0 0 0 3px #fff,0 0 0 4.5px currentColor;
 }
 .gauge-marker{
@@ -303,14 +303,19 @@ body{
 <div class="method-wrap">
 
   <!-- 계산 방식 선택 -->
-  <div class="method-tabs">
+  <div style="font-size:0.72rem;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:0.04em;text-transform:uppercase;">나는 어떤 상황인가요?</div>
+  <div class="method-tabs" style="grid-template-columns:1fr 1fr 1fr;">
     <div class="method-tab on" id="tabFull" onclick="setMethod('full')">
-      <span class="mt-title">📌 과거 데이터 포함</span>
-      <span class="mt-desc">과거 주급으로 계정 고유<br>단가를 역산해서 예측해요</span>
+      <span class="mt-title">📌 기존 정산자</span>
+      <span class="mt-desc">이전 주급 데이터로<br>내 계정 수익 효율을<br>역산해서 예측해요</span>
     </div>
     <div class="method-tab" id="tabSimple" onclick="setMethod('simple')">
-      <span class="mt-title">⚡ 현재 데이터만</span>
-      <span class="mt-desc">과거 데이터 없이<br>현재 수치만으로 예측해요</span>
+      <span class="mt-title">⚡ 첫 정산 도전 중</span>
+      <span class="mt-desc">과거 데이터 없이<br>현재 수치만으로<br>예측해요</span>
+    </div>
+    <div class="method-tab" id="tabFirst" onclick="setMethod('first')">
+      <span class="mt-title">🐣 첫 주급!</span>
+      <span class="mt-desc">이번이 처음으로<br>주급 받는 경우<br>보수적으로 계산해요</span>
     </div>
   </div>
 
@@ -320,7 +325,7 @@ body{
       <div class="card-icon ci-orange">📌</div>
       <div>
         <div class="card-title">이전 정산 주기 데이터</div>
-        <div class="card-sub">과거 데이터로 내 계정 고유 단가를 역산해요</div>
+        <div class="card-sub">과거 데이터로 내 계정 고유 수익 효율을 역산해요</div>
       </div>
     </div>
     <div class="note warn">과거 데이터를 넣을수록 내 계정에 맞는 예측값이 나와요!</div>
@@ -380,7 +385,7 @@ body{
       <input type="number" id="cTf" placeholder="예: 1900" oninput="updateRatio()">
     </div>
     <div class="field">
-      <label>인증된 팔로워 (명) <span class="tip" data-tip="단가에 직접 영향 — 핵심 지표!">?</span></label>
+      <label>인증된 팔로워 (명) <span class="tip" data-tip="수익 효율에 직접 영향 — 핵심 지표!">?</span></label>
       <input type="number" id="cVf" placeholder="예: 1100" oninput="updateRatio()">
     </div>
     <div class="ratio-badge" id="ratioBadge"></div>
@@ -414,12 +419,12 @@ body{
     <!-- 두 공식 비교 -->
     <div class="formula-compare">
       <div class="f-card" id="fcA">
-        <span class="f-label">공식 A · 단가 기반</span>
+        <span class="f-label">데이터 분석 공식 · 수익 효율 기반</span>
         <div class="f-amount" id="fcAamt">--</div>
         <div class="f-sub">인증팔로워 비율 중심</div>
       </div>
       <div class="f-card" id="fcB">
-        <span class="f-label">공식 B · 참여 기반</span>
+        <span class="f-label">두됴지님 공식 · 참여 기반</span>
         <div class="f-amount" id="fcBamt">--</div>
         <div class="f-sub">답글·참여율 중심</div>
       </div>
@@ -454,7 +459,7 @@ body{
     </div>
   </div>
 
-  <p class="disclaimer">💾 데이터는 내 기기에만 저장 · ⚠️ 재미로만 확인해보세요!</p>
+  
 </div>
 
 <script>
@@ -467,7 +472,7 @@ const SK      = 'xsalary_v1';
 // 다음 정산 마감: 4/25 KST 08:00 = 4/24 UTC 23:00
 const DEADLINE = new Date('2026-04-24T23:00:00Z');
 
-// 공식 A 상수 (내 데이터 분석 기반 — 인증팔로워 비율·단가 중심)
+// 공식 A 상수 (내 데이터 분석 기반 — 인증팔로워 비율·수익 효율 중심)
 const CPM_BASE   = 1.8;
 const FOL_W      = 0.004;
 const REPLY_W    = 0.0008;
@@ -486,7 +491,8 @@ function setMethod(m) {
   method = m;
   document.getElementById('tabFull').classList.toggle('on', m === 'full');
   document.getElementById('tabSimple').classList.toggle('on', m === 'simple');
-  document.getElementById('sec-past').classList.toggle('disabled', m === 'simple');
+  document.getElementById('tabFirst').classList.toggle('on', m === 'first');
+  document.getElementById('sec-past').classList.toggle('disabled', m === 'simple' || m === 'first');
   save();
 }
 
@@ -521,14 +527,14 @@ function updateRatio() {
   const pct = (vf / tf * 100).toFixed(1);
   const cls = pct >= 75 ? 'good' : pct >= 60 ? '' : 'warn';
   const icon = pct >= 75 ? '🟢' : pct >= 60 ? '🔵' : '🟡';
-  const desc = pct >= 75 ? '높음 — 단가 유지 기대' : pct >= 60 ? '보통' : '낮음 — 단가 희석 주의';
+  const desc = pct >= 75 ? '높음 — 수익 효율 유지 기대' : pct >= 60 ? '보통' : '낮음 — 수익 효율 주의';
   badge.className = `ratio-badge show ${cls}`;
   badge.innerHTML = `${icon} 인증팔로워 비율 <strong>${pct}%</strong> · ${desc}`;
   save();
 }
 
 // ─────────────────────────────
-// 공식 A — 단가 기반 (내 분석)
+// 공식 A — 수익 효율 기반 (내 분석)
 // model = (imp×CPM + vf×FOL_W + rep×REPLY_W) × (1 + eng×ENG_PREM)
 // ─────────────────────────────
 function modelA(imp, vf, rep, eng) {
@@ -579,6 +585,9 @@ function calculate() {
     } else {
       predA = modelA(cImp, cVf, cRep, cEng) * rMult;
     }
+  } else if (method === 'first') {
+    // 첫 주급: 한국 계정 현실 반영해 0.35배 매우 보수적 적용
+    predA = modelA(cImp, cVf, cRep, cEng) * rMult * 0.35;
   } else {
     predA = modelA(cImp, cVf, cRep, cEng) * rMult * FIRST_K;
   }
@@ -596,6 +605,8 @@ function calculate() {
     } else {
       predB = modelB(cImp, cVf, cRep, cEng) * 0.5;
     }
+  } else if (method === 'first') {
+    predB = modelB(cImp, cVf, cRep, cEng) * 0.35;
   } else {
     predB = modelB(cImp, cVf, cRep, cEng) * 0.5;
   }
@@ -669,14 +680,14 @@ function calculate() {
       <div class="ins-sub">두 공식 차이 $${diffAB}</div>
     </div>
     <div class="ins-card">
-      <div class="ins-lbl">노출당 단가</div>
+      <div class="ins-lbl">노출당 수익 효율</div>
       <div class="ins-val ${cpm >= 10 ? 'green' : cpm >= 6 ? '' : 'red'}">$${cpm.toFixed(2)}</div>
       <div class="ins-sub">1M 노출당 수익</div>
     </div>
     <div class="ins-card">
       <div class="ins-lbl">인증팔로워 비율</div>
       <div class="ins-val ${ratioClr}">${ratioStr}</div>
-      <div class="ins-sub">${ratioDisp >= 75 ? '단가 유지 중 👍' : ratioDisp >= 60 ? '보통 수준' : ratioDisp ? '단가 희석 주의 ⚠️' : '전체팔로워도 입력해주세요'}</div>
+      <div class="ins-sub">${ratioDisp >= 75 ? '수익 효율 유지 중 👍' : ratioDisp >= 60 ? '보통 수준' : ratioDisp ? '수익 효율 주의 ⚠️' : '전체팔로워도 입력해주세요'}</div>
     </div>
     <div class="ins-card">
       <div class="ins-lbl">하루 필요 수익</div>
@@ -694,8 +705,9 @@ function calculate() {
   } else {
     msg = `😢 아직 $${gap.toFixed(2)} 부족해요.<br>인증팔로워와의 교류를 늘려보세요!`;
   }
+  if (method === 'first') msg += `<br><span style="font-size:0.74rem;color:var(--text2)">🐣 첫 주급은 실제와 차이가 클 수 있어요. 받은 후 기존 정산자 모드로 다시 계산해보세요!</span>`;
   if (ratioDisp && ratioDisp < 60) {
-    msg += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ 인증팔로워 비율 ${ratioDisp}% — 단가가 희석되고 있어요</span>`;
+    msg += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ 인증팔로워 비율 ${ratioDisp}% — 수익 효율이 낮아지고 있어요</span>`;
   }
   document.getElementById('rMsg').innerHTML = msg;
 
@@ -719,8 +731,7 @@ function load() {
     const raw = localStorage.getItem(SK);
     if (!raw) return;
     const d = JSON.parse(raw);
-    if (d.method) setMethod(d.method);
-    IDS.forEach(id => { if (d[id] !== undefined && d[id] !== '') s(id, d[id]); });
+    if (d.method) setMethod(d.method);    IDS.forEach(id => { if (d[id] !== undefined && d[id] !== '') s(id, d[id]); });
     updateRatio();
   } catch(e) {}
 }
