@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X 주급 계산기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#fff;
+  --surface:#fff;
+  --surface2:#f5f5f7;
+  --border:#e5e5ea;
+  --border2:#c7c7cc;
+  --text:#1c1c1e;
+  --text2:#636366;
+  --text3:#aeaeb2;
+  --red:#e8380d;
+  --red-soft:#fff2ee;
+  --blue:#007aff;
+  --blue-soft:#f0f8ff;
+  --green:#1c8c4e;
+  --green-soft:#edfaf3;
+  --green-border:#a8dfc0;
+  --yellow:#c47d00;
+  --yellow-soft:#fffaed;
+  --teal:#009e8c;
+  --teal-soft:#f0fdfb;
+  --teal-border:#9fe4dc;
+  --shadow-sm:0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 18px rgba(0,0,0,0.08);
+  --r:14px;--r-sm:10px;--r-lg:20px;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;
+  min-height:100vh;
+  padding-bottom:60px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HERO ── */
+.hero{
+  padding:36px 24px 28px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--red-soft);border:1px solid #ffd0c2;
+  color:var(--red);font-size:0.7rem;font-weight:700;
+  letter-spacing:0.06em;padding:4px 12px;
+  border-radius:99px;margin-bottom:14px;text-transform:uppercase;
+}
+.hero h1{
+  font-size:clamp(1.5rem,5.5vw,2rem);
+  font-weight:800;letter-spacing:-0.025em;line-height:1.15;
+  margin-bottom:8px;
+}
+.hero h1 em{color:var(--red);font-style:normal;}
+.hero p{font-size:0.8rem;color:var(--text2);line-height:1.7;}
+
+/* ── METHOD TABS ── */
+.method-wrap{
+  max-width:580px;margin:0 auto;
+  padding:20px 18px 0;
+}
+.method-tabs{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:8px;margin-bottom:20px;
+}
+.method-tab{
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:14px 12px;
+  cursor:pointer;transition:all 0.18s;
+  text-align:left;
+}
+.method-tab:hover{border-color:var(--border2);}
+.method-tab.on{
+  border-color:var(--blue);
+  background:var(--blue-soft);
+}
+.method-tab .mt-title{
+  font-size:0.82rem;font-weight:700;
+  color:var(--text);display:block;margin-bottom:3px;
+}
+.method-tab.on .mt-title{color:var(--blue);}
+.method-tab .mt-desc{
+  font-size:0.68rem;color:var(--text3);line-height:1.5;
+}
+
+/* ── CARDS ── */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:20px 18px;
+  margin-bottom:12px;box-shadow:var(--shadow-sm);
+}
+.card.disabled{opacity:0.3;pointer-events:none;}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.card-icon{
+  width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.95rem;flex-shrink:0;
+}
+.ci-orange{background:#fff4ee;}
+.ci-yellow{background:#fffaed;}
+.ci-teal{background:var(--teal-soft);}
+.ci-blue{background:var(--blue-soft);}
+.card-title{font-size:0.9rem;font-weight:700;}
+.card-sub{font-size:0.68rem;color:var(--text3);margin-top:2px;}
+
+.note{
+  font-size:0.73rem;line-height:1.6;
+  background:var(--surface2);
+  border-left:3px solid var(--border2);
+  border-radius:0 var(--r-sm) var(--r-sm) 0;
+  padding:9px 11px;margin-bottom:14px;color:var(--text2);
+}
+.note.warn{border-left-color:var(--red);background:var(--red-soft);color:#a02c0c;}
+
+/* ── FIELDS ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field{margin-bottom:11px;}
+.field:last-child{margin-bottom:0;}
+.field label{
+  display:flex;align-items:center;gap:5px;
+  font-size:0.74rem;font-weight:700;color:var(--text2);margin-bottom:5px;
+}
+.tip{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--surface2);color:var(--text3);
+  font-size:0.58rem;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;
+  cursor:help;flex-shrink:0;position:relative;
+}
+.tip:hover::after{
+  content:attr(data-tip);
+  position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);
+  background:var(--text);color:#fff;
+  font-size:0.66rem;padding:4px 8px;border-radius:6px;
+  white-space:nowrap;z-index:10;pointer-events:none;font-weight:400;
+}
+.field input{
+  width:100%;background:var(--surface2);
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:10px 12px;color:var(--text);
+  font-size:0.9rem;font-family:inherit;outline:none;
+  transition:border-color 0.18s,background 0.18s;
+}
+.field input:focus{border-color:var(--text);background:#fff;}
+.field input::placeholder{color:var(--text3);}
+
+/* ratio badge */
+.ratio-badge{
+  display:none;align-items:center;gap:6px;
+  border-radius:7px;padding:5px 10px;margin-top:7px;
+  font-size:0.71rem;font-weight:700;
+  background:var(--blue-soft);border:1px solid #c2daf5;color:var(--blue);
+}
+.ratio-badge.show{display:inline-flex;}
+.ratio-badge.warn{background:var(--yellow-soft);border-color:#f0d080;color:var(--yellow);}
+.ratio-badge.good{background:var(--green-soft);border-color:var(--green-border);color:var(--green);}
+
+/* ── BUTTONS ── */
+.btn-calc{
+  width:100%;background:var(--text);color:#fff;border:none;
+  border-radius:var(--r);padding:16px;font-size:0.92rem;font-weight:700;
+  font-family:inherit;cursor:pointer;margin-top:18px;
+  transition:background 0.15s,transform 0.12s;box-shadow:var(--shadow-md);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-calc:hover{background:#2e2b26;transform:translateY(-1px);}
+.btn-calc:active{transform:none;}
+.btn-sec{
+  width:100%;background:transparent;color:var(--text3);
+  border:1.5px solid var(--border);border-radius:var(--r);
+  padding:11px;font-size:0.78rem;font-family:inherit;
+  cursor:pointer;margin-top:8px;transition:all 0.18s;
+}
+.btn-sec:hover{color:var(--text2);border-color:var(--border2);}
+
+/* ── RESULT ── */
+.result-wrap{display:none;margin-top:20px;}
+.result-wrap.show{display:block;animation:fadeUp 0.4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* 두 공식 비교 카드 */
+.formula-compare{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:14px;
+}
+.f-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:16px 14px;text-align:center;
+}
+.f-card.highlight{
+  border-color:var(--teal);background:var(--teal-soft);
+}
+.f-label{
+  font-size:0.65rem;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.05em;
+  margin-bottom:6px;display:block;
+}
+.f-card.highlight .f-label{color:var(--teal);}
+.f-amount{
+  font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;
+  line-height:1;margin-bottom:4px;
+}
+.f-amount.green{color:var(--green);}
+.f-amount.yellow{color:var(--yellow);}
+.f-amount.red{color:var(--red);}
+.f-sub{font-size:0.68rem;color:var(--text3);}
+
+/* 종합 결과 */
+.result-main{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md);
+}
+.res-top{
+  padding:24px 20px 20px;text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.res-verdict{
+  font-size:0.72rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.res-verdict::before,.res-verdict::after{
+  content:'';display:block;height:1px;width:28px;
+  background:currentColor;opacity:0.2;
+}
+.res-verdict.escape{color:var(--green);}
+.res-verdict.close{color:var(--yellow);}
+.res-verdict.fail{color:var(--red);}
+.res-amount{
+  font-size:3.6rem;font-weight:800;line-height:1;
+  letter-spacing:-0.04em;margin-bottom:5px;
+}
+.res-amount.green{color:var(--green);}
+.res-amount.yellow{color:var(--yellow);}
+.res-amount.red{color:var(--red);}
+.res-goal{font-size:0.74rem;color:var(--text3);}
+
+/* gauge */
+.gauge-wrap{padding:18px 20px;border-bottom:1px solid var(--border);}
+.gauge-head{display:flex;justify-content:space-between;margin-bottom:8px;}
+.gauge-lbl{font-size:0.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.04em;}
+.gauge-pct{font-size:0.7rem;font-weight:800;}
+.gauge-pct.green{color:var(--green);}
+.gauge-pct.yellow{color:var(--yellow);}
+.gauge-pct.red{color:var(--red);}
+.gauge-track{height:8px;background:var(--surface2);border-radius:99px;position:relative;}
+.gauge-fill{height:100%;border-radius:99px;transition:width 1s cubic-bezier(.22,.68,0,1.1);}
+.gauge-fill.green{background:linear-gradient(90deg,#33b89a,#06d6a0);}
+.gauge-fill.yellow{background:linear-gradient(90deg,#e8940a,#ffd166);}
+.gauge-fill.red{background:linear-gradient(90deg,var(--red),#ff7b5a);}
+.gauge-fill::after{
+  content:'';position:absolute;right:0;top:50%;
+  transform:translate(50%,-50%);
+  width:12px;height:12px;border-radius:50%;
+  background:inherit;box-shadow:0 0 0 3px #fff,0 0 0 4.5px currentColor;
+}
+.gauge-marker{
+  position:absolute;top:-4px;height:16px;width:2px;
+  background:var(--border2);border-radius:1px;
+}
+.gauge-marker::before{
+  content:'$30';position:absolute;top:-17px;left:50%;
+  transform:translateX(-50%);font-size:0.6rem;color:var(--text3);white-space:nowrap;
+}
+.gauge-foot{display:flex;justify-content:space-between;margin-top:6px;font-size:0.65rem;color:var(--text3);}
+
+/* insight */
+.insight-wrap{padding:18px 20px;border-bottom:1px solid var(--border);}
+.insight-title{font-size:0.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.ins-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px;}
+.ins-lbl{font-size:0.63rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;}
+.ins-val{font-size:1.05rem;font-weight:800;color:var(--text);line-height:1.1;}
+.ins-val.red{color:var(--red);}
+.ins-val.green{color:var(--green);}
+.ins-sub{font-size:0.65rem;color:var(--text3);margin-top:2px;line-height:1.4;}
+
+/* msg */
+.res-msg{padding:16px 20px;font-size:0.8rem;color:var(--text2);line-height:1.8;text-align:center;}
+
+.disclaimer{text-align:center;font-size:0.68rem;color:var(--text3);margin-top:24px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">X Creator Revenue</div>
+  <h1>주급 <em>계산기</em></h1>
+  <p>두 가지 공식을 동시에 돌려서<br>예상 주급 범위를 알려드려요</p>
+</div>
+
+<div class="method-wrap">
+
+  <!-- 계산 방식 선택 -->
+  <div class="method-tabs">
+    <div class="method-tab on" id="tabFull" onclick="setMethod('full')">
+      <span class="mt-title">📌 과거 데이터 포함</span>
+      <span class="mt-desc">과거 주급으로 계정 고유<br>단가를 역산해서 예측해요</span>
+    </div>
+    <div class="method-tab" id="tabSimple" onclick="setMethod('simple')">
+      <span class="mt-title">⚡ 현재 데이터만</span>
+      <span class="mt-desc">과거 데이터 없이<br>현재 수치만으로 예측해요</span>
+    </div>
+  </div>
+
+  <!-- 섹션 1: 과거 데이터 -->
+  <div class="card" id="sec-past">
+    <div class="card-header">
+      <div class="card-icon ci-orange">📌</div>
+      <div>
+        <div class="card-title">이전 정산 주기 데이터</div>
+        <div class="card-sub">과거 데이터로 내 계정 고유 단가를 역산해요</div>
+      </div>
+    </div>
+    <div class="note warn">과거 데이터를 넣을수록 내 계정에 맞는 예측값이 나와요!</div>
+    <div class="grid2">
+      <div class="field">
+        <label>노출수 (M) <span class="tip" data-tip="백만 단위 · 예: 7M → 7">?</span></label>
+        <input type="number" id="pImp" placeholder="예: 7" step="0.1">
+      </div>
+      <div class="field">
+        <label>답글수 (개)</label>
+        <input type="number" id="pRep" placeholder="예: 2300">
+      </div>
+      <div class="field">
+        <label>인증된 팔로워 (명)</label>
+        <input type="number" id="pVf" placeholder="예: 617">
+      </div>
+      <div class="field">
+        <label>참여율 (%)</label>
+        <input type="number" id="pEng" placeholder="예: 7" step="0.1">
+      </div>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>실제 받은 주급 ($)</label>
+      <input type="number" id="pSal" placeholder="예: 95.68" step="0.01">
+    </div>
+  </div>
+
+  <!-- 섹션 2: 현재 데이터 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ci-yellow">📊</div>
+      <div>
+        <div class="card-title">현재 정산 주기 성적</div>
+        <div class="card-sub">최근 2주 애널리틱스 기준</div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-bottom:10px">
+      <div class="field">
+        <label>노출수 (M)</label>
+        <input type="number" id="cImp" placeholder="예: 12.7" step="0.1">
+      </div>
+      <div class="field">
+        <label>참여율 (%)</label>
+        <input type="number" id="cEng" placeholder="예: 5.7" step="0.1">
+      </div>
+      <div class="field">
+        <label>답글수 (개)</label>
+        <input type="number" id="cRep" placeholder="예: 5200">
+      </div>
+      <div class="field">
+        <label>참여수</label>
+        <input type="number" id="cEngage" placeholder="예: 726100">
+      </div>
+    </div>
+    <div class="field">
+      <label>전체 팔로워 (명) <span class="tip" data-tip="인증 팔로워 비율 계산에 사용">?</span></label>
+      <input type="number" id="cTf" placeholder="예: 1900" oninput="updateRatio()">
+    </div>
+    <div class="field">
+      <label>인증된 팔로워 (명) <span class="tip" data-tip="단가에 직접 영향 — 핵심 지표!">?</span></label>
+      <input type="number" id="cVf" placeholder="예: 1100" oninput="updateRatio()">
+    </div>
+    <div class="ratio-badge" id="ratioBadge"></div>
+  </div>
+
+  <!-- 섹션 3: 마감일 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ci-teal">⏳</div>
+      <div>
+        <div class="card-title">정산일까지 남은 기간</div>
+        <div class="card-sub">4/25(금) 오전 8시 마감 기준 자동 계산</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding:4px 0">
+      <div style="font-size:2.8rem;font-weight:800;line-height:1" id="daysDisp">--</div>
+      <div>
+        <div style="font-size:0.85rem;font-weight:700" id="daysLabel">계산 중...</div>
+        <div style="font-size:0.68rem;color:var(--text3)">정산 주기 2주 (14일)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <button class="btn-calc" onclick="calculate()">예상 주급 계산하기 🚀</button>
+  <button class="btn-sec" onclick="clearAll()">🗑️ 저장된 데이터 지우기</button>
+
+  <!-- 결과 -->
+  <div class="result-wrap" id="resultWrap">
+
+    <!-- 두 공식 비교 -->
+    <div class="formula-compare">
+      <div class="f-card" id="fcA">
+        <span class="f-label">공식 A · 단가 기반</span>
+        <div class="f-amount" id="fcAamt">--</div>
+        <div class="f-sub">인증팔로워 비율 중심</div>
+      </div>
+      <div class="f-card" id="fcB">
+        <span class="f-label">공식 B · 참여 기반</span>
+        <div class="f-amount" id="fcBamt">--</div>
+        <div class="f-sub">답글·참여율 중심</div>
+      </div>
+    </div>
+
+    <!-- 종합 결과 -->
+    <div class="result-main">
+      <div class="res-top">
+        <div class="res-verdict" id="rVerdict"></div>
+        <div class="res-amount" id="rAmount"></div>
+        <div class="res-goal">두 공식 평균 예측 · 목표 <strong>$30</strong></div>
+      </div>
+
+      <div class="gauge-wrap">
+        <div class="gauge-head">
+          <span class="gauge-lbl">목표 달성률</span>
+          <span class="gauge-pct" id="gPct"></span>
+        </div>
+        <div class="gauge-track">
+          <div class="gauge-fill" id="gFill"></div>
+          <div class="gauge-marker" id="gMarker"></div>
+        </div>
+        <div class="gauge-foot"><span>$0</span><span id="gMax"></span></div>
+      </div>
+
+      <div class="insight-wrap">
+        <div class="insight-title">🔍 내 계정 진단</div>
+        <div class="insight-grid" id="insGrid"></div>
+      </div>
+
+      <div class="res-msg" id="rMsg"></div>
+    </div>
+  </div>
+
+  <p class="disclaimer">💾 데이터는 내 기기에만 저장 · ⚠️ 재미로만 확인해보세요!</p>
+</div>
+
+<script>
+// ─────────────────────────────
+// 상수
+// ─────────────────────────────
+const GOAL    = 30;
+const SK      = 'xsalary_v1';
+
+// 다음 정산 마감: 4/25 KST 08:00 = 4/24 UTC 23:00
+const DEADLINE = new Date('2026-04-24T23:00:00Z');
+
+// 공식 A 상수 (내 데이터 분석 기반 — 인증팔로워 비율·단가 중심)
+const CPM_BASE   = 1.8;
+const FOL_W      = 0.004;
+const REPLY_W    = 0.0008;
+const ENG_PREM   = 0.18;
+const FIRST_K    = 0.5;
+
+// ─────────────────────────────
+// State
+// ─────────────────────────────
+let method = 'full'; // 'full' | 'simple'
+
+// ─────────────────────────────
+// 메서드 전환
+// ─────────────────────────────
+function setMethod(m) {
+  method = m;
+  document.getElementById('tabFull').classList.toggle('on', m === 'full');
+  document.getElementById('tabSimple').classList.toggle('on', m === 'simple');
+  document.getElementById('sec-past').classList.toggle('disabled', m === 'simple');
+  save();
+}
+
+// ─────────────────────────────
+// 카운트다운
+// ─────────────────────────────
+function tick() {
+  const diff = DEADLINE - new Date();
+  if (diff <= 0) {
+    document.getElementById('daysDisp').textContent = '0';
+    document.getElementById('daysLabel').textContent = '마감됐어요';
+    return;
+  }
+  const totalSec = Math.floor(diff / 1000);
+  const d = Math.floor(totalSec / 86400);
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const disp = document.getElementById('daysDisp');
+  disp.textContent = d;
+  disp.style.color = d <= 2 ? 'var(--red)' : 'var(--text)';
+  document.getElementById('daysLabel').innerHTML = `<strong>${d}일 ${h}시간</strong> 남았어요`;
+}
+tick();
+setInterval(tick, 60000);
+
+// ─────────────────────────────
+// 인증팔로워 비율 배지
+// ─────────────────────────────
+function updateRatio() {
+  const tf = +g('cTf') || 0, vf = +g('cVf') || 0;
+  const badge = document.getElementById('ratioBadge');
+  if (!tf || !vf) { badge.className = 'ratio-badge'; return; }
+  const pct = (vf / tf * 100).toFixed(1);
+  const cls = pct >= 75 ? 'good' : pct >= 60 ? '' : 'warn';
+  const icon = pct >= 75 ? '🟢' : pct >= 60 ? '🔵' : '🟡';
+  const desc = pct >= 75 ? '높음 — 단가 유지 기대' : pct >= 60 ? '보통' : '낮음 — 단가 희석 주의';
+  badge.className = `ratio-badge show ${cls}`;
+  badge.innerHTML = `${icon} 인증팔로워 비율 <strong>${pct}%</strong> · ${desc}`;
+  save();
+}
+
+// ─────────────────────────────
+// 공식 A — 단가 기반 (내 분석)
+// model = (imp×CPM + vf×FOL_W + rep×REPLY_W) × (1 + eng×ENG_PREM)
+// ─────────────────────────────
+function modelA(imp, vf, rep, eng) {
+  return ((imp * CPM_BASE) + (vf * FOL_W) + (rep * REPLY_W)) * (1 + eng * ENG_PREM);
+}
+
+function ratioMultA(tf, vf) {
+  if (!tf || !vf) return 1.0;
+  const p = vf / tf * 100;
+  return p >= 75 ? 1.15 : p >= 60 ? 1.0 : 0.88;
+}
+
+// ─────────────────────────────
+// 공식 B — 참여 기반 (두됴지님)
+// model = ((rep/1000×21) + (imp×vf/1000)) × (eng/2)
+// ─────────────────────────────
+function modelB(imp, vf, rep, eng) {
+  return ((rep / 1000 * 21) + (imp * vf / 1000)) * (eng / 2);
+}
+
+// ─────────────────────────────
+// 계산
+// ─────────────────────────────
+function calculate() {
+  const cImp    = +g('cImp')    || 0;
+  const cVf     = +g('cVf')     || 0;
+  const cTf     = +g('cTf')     || 0;
+  const cEng    = +g('cEng')    || 0;
+  const cRep    = +g('cRep')    || 0;
+
+  if (!cImp && !cVf) {
+    alert('현재 노출수 또는 인증된 팔로워를 입력해주세요!');
+    return;
+  }
+
+  // ── 공식 A 계산 ──
+  let predA;
+  const rMult = ratioMultA(cTf, cVf);
+
+  if (method === 'full') {
+    const pImp = +g('pImp') || 0, pVf = +g('pVf') || 0;
+    const pRep = +g('pRep') || 0, pEng = +g('pEng') || 0;
+    const pSal = +g('pSal') || 0;
+    if (pImp > 0 && pSal > 0) {
+      const pastM = modelA(pImp, pVf, pRep, pEng);
+      const ratioA = Math.min(Math.max(pSal / pastM, 0.1), 5.0);
+      predA = modelA(cImp, cVf, cRep, cEng) * ratioA * rMult;
+    } else {
+      predA = modelA(cImp, cVf, cRep, cEng) * rMult;
+    }
+  } else {
+    predA = modelA(cImp, cVf, cRep, cEng) * rMult * FIRST_K;
+  }
+
+  // ── 공식 B 계산 ──
+  let predB;
+  if (method === 'full') {
+    const pImp = +g('pImp') || 0, pVf = +g('pVf') || 0;
+    const pRep = +g('pRep') || 0, pEng = +g('pEng') || 0;
+    const pSal = +g('pSal') || 0;
+    if (pImp > 0 && pSal > 0) {
+      const pastMB = modelB(pImp, pVf, pRep, pEng);
+      const ratioB = pastMB > 0 ? Math.min(Math.max(pSal / pastMB, 0.05), 10) : 0.5;
+      predB = modelB(cImp, cVf, cRep, cEng) * ratioB;
+    } else {
+      predB = modelB(cImp, cVf, cRep, cEng) * 0.5;
+    }
+  } else {
+    predB = modelB(cImp, cVf, cRep, cEng) * 0.5;
+  }
+
+  // ── 평균 ──
+  const avg = (predA + predB) / 2;
+  const pct = avg / GOAL * 100;
+  const maxVal = Math.max(avg * 1.3, GOAL * 1.5);
+
+  // ── CPM 계산 ──
+  const cpm = cImp > 0 ? avg / cImp : 0;
+  const ratioDisp = cTf > 0 && cVf > 0 ? (cVf / cTf * 100).toFixed(1) : null;
+
+  // 남은 기간
+  const diff = Math.max(DEADLINE - new Date(), 0);
+  const daysLeft = Math.max(diff / 1000 / 3600 / 24, 1);
+  const gap = GOAL - avg;
+  const perDay = Math.max(gap / daysLeft, 0);
+
+  // ── 렌더 ──
+  document.getElementById('resultWrap').classList.add('show');
+
+  // 공식 카드
+  const aColor = predA >= GOAL ? 'green' : predA >= GOAL*0.8 ? 'yellow' : 'red';
+  const bColor = predB >= GOAL ? 'green' : predB >= GOAL*0.8 ? 'yellow' : 'red';
+  document.getElementById('fcAamt').textContent = `$${predA.toFixed(2)}`;
+  document.getElementById('fcAamt').className = `f-amount ${aColor}`;
+  document.getElementById('fcBamt').textContent = `$${predB.toFixed(2)}`;
+  document.getElementById('fcBamt').className = `f-amount ${bColor}`;
+
+  // 더 신뢰도 높은 공식 하이라이트 (과거 데이터 있으면 둘 다, 없으면 B)
+  document.getElementById('fcA').className = method === 'full' ? 'f-card highlight' : 'f-card';
+  document.getElementById('fcB').className = 'f-card highlight';
+
+  // 종합
+  let cls, verdict, vCls;
+  if (avg >= GOAL) {
+    cls='green'; verdict='🎉 최수미 탈출 가능!'; vCls='res-verdict escape';
+  } else if (avg >= GOAL*0.8) {
+    cls='yellow'; verdict='⚡ 아슬아슬...'; vCls='res-verdict close';
+  } else {
+    cls='red'; verdict='😭 최수미 탈출 실패'; vCls='res-verdict fail';
+  }
+  document.getElementById('rVerdict').className = vCls;
+  document.getElementById('rVerdict').textContent = verdict;
+  document.getElementById('rAmount').className = `res-amount ${cls}`;
+  document.getElementById('rAmount').textContent = `$${avg.toFixed(2)}`;
+
+  // 게이지
+  const fillPct = Math.min(pct, 100);
+  const goalPct = (GOAL / maxVal) * 100;
+  const gf = document.getElementById('gFill');
+  gf.className = `gauge-fill ${cls}`;
+  gf.style.width = '0%';
+  setTimeout(() => gf.style.width = fillPct + '%', 60);
+  document.getElementById('gPct').className = `gauge-pct ${cls}`;
+  document.getElementById('gPct').textContent = `${Math.min(pct,999).toFixed(1)}%`;
+  document.getElementById('gMarker').style.left = goalPct + '%';
+  document.getElementById('gMax').textContent = `$${maxVal.toFixed(0)}`;
+
+  // 진단 카드
+  const ins = document.getElementById('insGrid');
+  const diffAB = Math.abs(predA - predB).toFixed(2);
+  const ratioStr = ratioDisp ? `${ratioDisp}%` : '미입력';
+  const ratioClr = ratioDisp ? (ratioDisp >= 75 ? 'green' : ratioDisp >= 60 ? '' : 'red') : '';
+
+  ins.innerHTML = `
+    <div class="ins-card">
+      <div class="ins-lbl">예상 범위</div>
+      <div class="ins-val">$${Math.min(predA,predB).toFixed(0)}~$${Math.max(predA,predB).toFixed(0)}</div>
+      <div class="ins-sub">두 공식 차이 $${diffAB}</div>
+    </div>
+    <div class="ins-card">
+      <div class="ins-lbl">노출당 단가</div>
+      <div class="ins-val ${cpm >= 10 ? 'green' : cpm >= 6 ? '' : 'red'}">$${cpm.toFixed(2)}</div>
+      <div class="ins-sub">1M 노출당 수익</div>
+    </div>
+    <div class="ins-card">
+      <div class="ins-lbl">인증팔로워 비율</div>
+      <div class="ins-val ${ratioClr}">${ratioStr}</div>
+      <div class="ins-sub">${ratioDisp >= 75 ? '단가 유지 중 👍' : ratioDisp >= 60 ? '보통 수준' : ratioDisp ? '단가 희석 주의 ⚠️' : '전체팔로워도 입력해주세요'}</div>
+    </div>
+    <div class="ins-card">
+      <div class="ins-lbl">하루 필요 수익</div>
+      <div class="ins-val ${gap > 0 ? 'red' : 'green'}">${gap > 0 ? '$'+perDay.toFixed(2) : '달성!'}</div>
+      <div class="ins-sub">${Math.floor(daysLeft)}일 남은 기준</div>
+    </div>
+  `;
+
+  // 메시지
+  let msg = '';
+  if (avg >= GOAL) {
+    msg = `🎊 탈출 성공! <strong>$${(avg-GOAL).toFixed(2)}</strong> 더 버셨어요.`;
+  } else if (avg >= GOAL*0.8) {
+    msg = `💦 아슬아슬! 하루 <strong>$${perDay.toFixed(2)}</strong>씩만 더 채워요.`;
+  } else {
+    msg = `😢 아직 $${gap.toFixed(2)} 부족해요.<br>인증팔로워와의 교류를 늘려보세요!`;
+  }
+  if (ratioDisp && ratioDisp < 60) {
+    msg += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ 인증팔로워 비율 ${ratioDisp}% — 단가가 희석되고 있어요</span>`;
+  }
+  document.getElementById('rMsg').innerHTML = msg;
+
+  setTimeout(() => document.getElementById('resultWrap').scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
+  save();
+}
+
+// ─────────────────────────────
+// Storage
+// ─────────────────────────────
+const IDS = ['pImp','pVf','pRep','pEng','pSal','cImp','cVf','cTf','cEng','cRep','cEngage'];
+
+function save() {
+  const d = { method };
+  IDS.forEach(id => d[id] = g(id));
+  try { localStorage.setItem(SK, JSON.stringify(d)); } catch(e) {}
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(SK);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.method) setMethod(d.method);
+    IDS.forEach(id => { if (d[id] !== undefined && d[id] !== '') s(id, d[id]); });
+    updateRatio();
+  } catch(e) {}
+}
+
+function clearAll() {
+  if (!confirm('저장된 데이터를 모두 지울까요?')) return;
+  try { localStorage.removeItem(SK); } catch(e) {}
+  IDS.forEach(id => s(id, ''));
+  setMethod('full');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('ratioBadge').className = 'ratio-badge';
+}
+
+const g = id => document.getElementById(id)?.value ?? '';
+const s = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+
+document.querySelectorAll('input[type=number]').forEach(el => el.addEventListener('input', save));
+load();
+</script>
+</body>
+</html>
