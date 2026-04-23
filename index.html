@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>X 주급 계산기 v3</title>
+<title>X 주급 계산기</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -29,8 +29,6 @@
   --teal:#009e8c;
   --teal-soft:#f0fdfb;
   --teal-border:#9fe4dc;
-  --purple:#7c3aed;
-  --purple-soft:#f5f3ff;
   --shadow-sm:0 1px 4px rgba(0,0,0,0.06);
   --shadow-md:0 4px 18px rgba(0,0,0,0.08);
   --r:4px;--r-sm:4px;--r-lg:4px;
@@ -45,6 +43,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/* ── HERO ── */
 .hero{
   padding:36px 24px 28px;
   text-align:center;
@@ -64,19 +63,14 @@ body{
 }
 .hero h1 em{color:var(--red);font-style:normal;}
 .hero p{font-size:0.8rem;color:var(--text2);line-height:1.7;}
-.version-tag{
-  display:inline-block;
-  background:var(--purple-soft);color:var(--purple);
-  font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:3px;
-  margin-top:6px;
-}
 
+/* ── METHOD TABS ── */
 .method-wrap{
   max-width:580px;margin:0 auto;
   padding:20px 18px 0;
 }
 .method-tabs{
-  display:grid;grid-template-columns:1fr 1fr 1fr;
+  display:grid;grid-template-columns:1fr 1fr;
   gap:8px;margin-bottom:20px;
 }
 .method-tab{
@@ -86,11 +80,20 @@ body{
   text-align:left;
 }
 .method-tab:hover{border-color:var(--border2);}
-.method-tab.on{border-color:var(--blue);background:var(--blue-soft);}
-.method-tab .mt-title{font-size:0.82rem;font-weight:700;color:var(--text);display:block;margin-bottom:3px;}
+.method-tab.on{
+  border-color:var(--blue);
+  background:var(--blue-soft);
+}
+.method-tab .mt-title{
+  font-size:0.82rem;font-weight:700;
+  color:var(--text);display:block;margin-bottom:3px;
+}
 .method-tab.on .mt-title{color:var(--blue);}
-.method-tab .mt-desc{font-size:0.68rem;color:var(--text3);line-height:1.5;}
+.method-tab .mt-desc{
+  font-size:0.68rem;color:var(--text3);line-height:1.5;
+}
 
+/* ── CARDS ── */
 .card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--r-lg);padding:20px 18px;
@@ -107,7 +110,6 @@ body{
 .ci-yellow{background:#fffaed;}
 .ci-teal{background:var(--teal-soft);}
 .ci-blue{background:var(--blue-soft);}
-.ci-purple{background:var(--purple-soft);}
 .card-title{font-size:0.9rem;font-weight:700;}
 .card-sub{font-size:0.68rem;color:var(--text3);margin-top:2px;}
 
@@ -119,9 +121,8 @@ body{
   padding:9px 11px;margin-bottom:14px;color:var(--text2);
 }
 .note.warn{border-left-color:var(--red);background:var(--red-soft);color:#a02c0c;}
-.note.info{border-left-color:var(--blue);background:var(--blue-soft);color:#0055cc;}
-.note.purple{border-left-color:var(--purple);background:var(--purple-soft);color:var(--purple);}
 
+/* ── FIELDS ── */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .field{margin-bottom:11px;}
 .field:last-child{margin-bottom:0;}
@@ -154,13 +155,6 @@ body{
 .field input:focus{border-color:var(--text);background:#fff;}
 .field input::placeholder{color:var(--text3);}
 
-/* 비율 입력 슬라이더 느낌 */
-.ratio-input-wrap{position:relative;}
-.ratio-input-wrap .ratio-unit{
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  font-size:0.85rem;color:var(--text3);pointer-events:none;
-}
-
 /* ratio badge */
 .ratio-badge{
   display:none;align-items:center;gap:6px;
@@ -171,10 +165,8 @@ body{
 .ratio-badge.show{display:inline-flex;}
 .ratio-badge.warn{background:var(--yellow-soft);border-color:#f0d080;color:var(--yellow);}
 .ratio-badge.good{background:var(--green-soft);border-color:var(--green-border);color:var(--green);}
-.ratio-badge.danger{background:var(--red-soft);border-color:#ffc0b0;color:var(--red);}
 
-
-
+/* ── BUTTONS ── */
 .btn-calc{
   width:100%;background:var(--text);color:#fff;border:none;
   border-radius:var(--r);padding:16px;font-size:0.92rem;font-weight:700;
@@ -192,24 +184,12 @@ body{
 }
 .btn-sec:hover{color:var(--text2);border-color:var(--border2);}
 
+/* ── RESULT ── */
 .result-wrap{display:none;margin-top:20px;}
 .result-wrap.show{display:block;animation:fadeUp 0.4s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-/* 수익화 제외 경고 배너 */
-.exclusion-warning{
-  display:none;
-  background:#fff0ee;border:2px solid var(--red);
-  border-radius:var(--r-lg);padding:16px 18px;
-  margin-bottom:16px;text-align:center;
-}
-.exclusion-warning.show{display:block;}
-.excl-icon{font-size:2rem;margin-bottom:8px;}
-.excl-title{font-size:0.95rem;font-weight:800;color:var(--red);margin-bottom:6px;}
-.excl-desc{font-size:0.76rem;color:#a02c0c;line-height:1.7;}
-
-
-
+/* 두 공식 비교 카드 */
 .formula-compare{
   display:grid;grid-template-columns:1fr 1fr;gap:10px;
   margin-bottom:14px;
@@ -218,35 +198,55 @@ body{
   background:var(--surface);border:1.5px solid var(--border);
   border-radius:var(--r);padding:16px 14px;text-align:center;
 }
-.f-card.highlight{border-color:var(--teal);background:var(--teal-soft);}
-.f-label{font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;display:block;}
+.f-card.highlight{
+  border-color:var(--teal);background:var(--teal-soft);
+}
+.f-label{
+  font-size:0.65rem;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.05em;
+  margin-bottom:6px;display:block;
+}
 .f-card.highlight .f-label{color:var(--teal);}
-.f-amount{font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;line-height:1;margin-bottom:4px;}
+.f-amount{
+  font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;
+  line-height:1;margin-bottom:4px;
+}
 .f-amount.green{color:var(--green);}
 .f-amount.yellow{color:var(--yellow);}
 .f-amount.red{color:var(--red);}
 .f-sub{font-size:0.68rem;color:var(--text3);}
 
+/* 종합 결과 */
 .result-main{
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md);
 }
-.res-top{padding:24px 20px 20px;text-align:center;border-bottom:1px solid var(--border);}
+.res-top{
+  padding:24px 20px 20px;text-align:center;
+  border-bottom:1px solid var(--border);
+}
 .res-verdict{
   font-size:0.72rem;font-weight:700;letter-spacing:0.06em;
   text-transform:uppercase;margin-bottom:10px;
   display:flex;align-items:center;justify-content:center;gap:8px;
 }
-.res-verdict::before,.res-verdict::after{content:'';display:block;height:1px;width:28px;background:currentColor;opacity:0.2;}
+.res-verdict::before,.res-verdict::after{
+  content:'';display:block;height:1px;width:28px;
+  background:currentColor;opacity:0.2;
+}
 .res-verdict.escape{color:var(--green);}
 .res-verdict.close{color:var(--yellow);}
 .res-verdict.fail{color:var(--red);}
-.res-amount{font-size:3.6rem;font-weight:800;line-height:1;letter-spacing:-0.04em;margin-bottom:5px;}
+.res-amount{
+  font-size:3.6rem;font-weight:800;line-height:1;
+  letter-spacing:-0.04em;margin-bottom:5px;
+}
 .res-amount.green{color:var(--green);}
 .res-amount.yellow{color:var(--yellow);}
 .res-amount.red{color:var(--red);}
 .res-goal{font-size:0.74rem;color:var(--text3);}
 
+/* gauge */
 .gauge-wrap{padding:18px 20px;border-bottom:1px solid var(--border);}
 .gauge-head{display:flex;justify-content:space-between;margin-bottom:8px;}
 .gauge-lbl{font-size:0.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.04em;}
@@ -259,11 +259,23 @@ body{
 .gauge-fill.green{background:linear-gradient(90deg,#33b89a,#06d6a0);}
 .gauge-fill.yellow{background:linear-gradient(90deg,#e8940a,#ffd166);}
 .gauge-fill.red{background:linear-gradient(90deg,var(--red),#ff7b5a);}
-.gauge-fill::after{content:'';position:absolute;right:0;top:50%;transform:translate(50%,-50%);width:12px;height:12px;background:inherit;box-shadow:0 0 0 3px #fff,0 0 0 4.5px currentColor;}
-.gauge-marker{position:absolute;top:-4px;height:16px;width:2px;background:var(--border2);border-radius:1px;}
-.gauge-marker::before{content:'$30';position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:0.6rem;color:var(--text3);white-space:nowrap;}
+.gauge-fill::after{
+  content:'';position:absolute;right:0;top:50%;
+  transform:translate(50%,-50%);
+  width:12px;height:12px;
+  background:inherit;box-shadow:0 0 0 3px #fff,0 0 0 4.5px currentColor;
+}
+.gauge-marker{
+  position:absolute;top:-4px;height:16px;width:2px;
+  background:var(--border2);border-radius:1px;
+}
+.gauge-marker::before{
+  content:'$30';position:absolute;top:-17px;left:50%;
+  transform:translateX(-50%);font-size:0.6rem;color:var(--text3);white-space:nowrap;
+}
 .gauge-foot{display:flex;justify-content:space-between;margin-top:6px;font-size:0.65rem;color:var(--text3);}
 
+/* insight */
 .insight-wrap{padding:18px 20px;border-bottom:1px solid var(--border);}
 .insight-title{font-size:0.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;}
 .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
@@ -272,18 +284,12 @@ body{
 .ins-val{font-size:1.05rem;font-weight:800;color:var(--text);line-height:1.1;}
 .ins-val.red{color:var(--red);}
 .ins-val.green{color:var(--green);}
-.ins-val.yellow{color:var(--yellow);}
 .ins-sub{font-size:0.65rem;color:var(--text3);margin-top:2px;line-height:1.4;}
 
+/* msg */
 .res-msg{padding:16px 20px;font-size:0.8rem;color:var(--text2);line-height:1.8;text-align:center;}
 
 .disclaimer{text-align:center;font-size:0.68rem;color:var(--text3);margin-top:24px;line-height:1.7;}
-
-/* section toggle */
-.section-toggle{
-  font-size:0.72rem;font-weight:700;color:var(--blue);
-  cursor:pointer;margin-bottom:10px;display:inline-flex;align-items:center;gap:4px;
-}
 </style>
 </head>
 <body>
@@ -291,14 +297,14 @@ body{
 <div class="hero">
   <div class="hero-badge">X Creator Revenue</div>
   <h1>주급 <em>계산기</em></h1>
-  <p>두 가지 공식으로 예상 주급을 계산하고<br>노출 팔로잉 비율로 CPM을 보정해요</p>
-  <div class="version-tag">v3.1 · 노출팔로잉 CPM 보정 반영</div>
+  <p>두 가지 공식을 동시에 돌려서<br>예상 주급 범위를 알려드려요</p>
 </div>
 
 <div class="method-wrap">
 
+  <!-- 계산 방식 선택 -->
   <div style="font-size:0.72rem;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:0.04em;text-transform:uppercase;">나는 어떤 상황인가요?</div>
-  <div class="method-tabs">
+  <div class="method-tabs" style="grid-template-columns:1fr 1fr 1fr;">
     <div class="method-tab on" id="tabFull" onclick="setMethod('full')">
       <span class="mt-title">📌 기존 정산자</span>
       <span class="mt-desc">이전 주급 데이터로<br>내 계정 수익 효율을<br>역산해서 예측해요</span>
@@ -359,34 +365,35 @@ body{
     <div class="grid2" style="margin-bottom:10px">
       <div class="field">
         <label>노출수 (M)</label>
-        <input type="number" id="cImp" placeholder="예: 12.7" step="0.1" oninput="updateAll()">
+        <input type="number" id="cImp" placeholder="예: 12.7" step="0.1">
       </div>
       <div class="field">
         <label>참여율 (%)</label>
-        <input type="number" id="cEng" placeholder="예: 5.7" step="0.1" oninput="updateAll()">
+        <input type="number" id="cEng" placeholder="예: 5.7" step="0.1">
       </div>
       <div class="field">
         <label>답글수 (개)</label>
-        <input type="number" id="cRep" placeholder="예: 5200" oninput="updateAll()">
+        <input type="number" id="cRep" placeholder="예: 5200">
       </div>
       <div class="field">
         <label>참여수</label>
-        <input type="number" id="cEngage" placeholder="예: 726100" oninput="updateAll()">
+        <input type="number" id="cEngage" placeholder="예: 726100">
       </div>
     </div>
     <div class="field">
       <label>전체 팔로워 (명) <span class="tip" data-tip="인증 팔로워 비율 계산에 사용">?</span></label>
-      <input type="number" id="cTf" placeholder="예: 1900" oninput="updateAll()">
+      <input type="number" id="cTf" placeholder="예: 1900" oninput="updateRatio()">
     </div>
     <div class="field">
       <label>인증된 팔로워 (명) <span class="tip" data-tip="수익 효율에 직접 영향 — 핵심 지표!">?</span></label>
-      <input type="number" id="cVf" placeholder="예: 1100" oninput="updateAll()">
+      <input type="number" id="cVf" placeholder="예: 1100" oninput="updateRatio()">
     </div>
+    <div class="field">
+      <label>노출 팔로잉 비율 (%) <span class="tip" data-tip="애널리틱스 > 오디언스 > 노출수 > 팔로잉 비율. 낮을수록 바이럴 구조">?</span></label>
+      <input type="number" id="cImpFollow" placeholder="예: 1.2 (없으면 비워도 돼요)" step="0.1" oninput="updateFollowBadge()">
+    </div>
+    <div class="ratio-badge" id="followBadge"></div>
     <div class="ratio-badge" id="ratioBadge"></div>
-    <div class="field" style="margin-top:10px">
-      <label>노출 팔로잉 비율 (%) <span class="tip" data-tip="애널리틱스 → 노출수 → 팔로잉 탭 · CPM 보정에 사용">?</span></label>
-      <input type="number" id="cFolImpPct" placeholder="예: 1.2  (선택 입력)" step="0.1" min="0" max="100" oninput="save()">
-    </div>
   </div>
 
   <!-- 섹션 3: 마감일 -->
@@ -395,35 +402,24 @@ body{
       <div class="card-icon ci-teal">⏳</div>
       <div>
         <div class="card-title">정산일까지 남은 기간</div>
-        <div class="card-sub">4/25(금) 오전 8시 마감 기준 자동 계산</div>
+        <div class="card-sub">4/25(금) 오전 9시 마감 기준 자동 계산</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:14px;padding:4px 0">
       <div style="font-size:2.8rem;font-weight:800;line-height:1" id="daysDisp">--</div>
       <div>
         <div style="font-size:0.85rem;font-weight:700" id="daysLabel">계산 중...</div>
-        <div style="font-size:0.68rem;color:var(--text3)">정산 주기 2주 (14일)</div>
+        <div style="font-size:0.68rem;color:var(--text3)">정산 주기 2주 (14일) · 4/25(금) 오전 9시 마감</div>
       </div>
     </div>
   </div>
 
+  <!-- CTA -->
   <button class="btn-calc" onclick="calculate()">예상 주급 계산하기 🚀</button>
   <button class="btn-sec" onclick="clearAll()">🗑️ 저장된 데이터 지우기</button>
 
   <!-- 결과 -->
   <div class="result-wrap" id="resultWrap">
-
-    <!-- 수익화 제외 위험 경고 (최수미 케이스) -->
-    <div class="exclusion-warning" id="exclusionWarn">
-      <div class="excl-icon">⚠️</div>
-      <div class="excl-title">수익화 제외 위험 감지</div>
-      <div class="excl-desc">
-        노출수는 충분하지만 <strong>노출 팔로잉 비율이 매우 낮아</strong><br>
-        알고리즘이 "관심 없는 계정에 억지로 노출"로 판단할 수 있어요.<br>
-        실제 주급이 <strong>$0</strong>으로 처리될 가능성이 있습니다.<br>
-        <span style="font-size:0.72rem;margin-top:4px;display:block">참고: 노출 1.2%, 노출 7.3M 계정이 주급 $0을 받은 사례 확인됨</span>
-      </div>
-    </div>
 
     <!-- 두 공식 비교 -->
     <div class="formula-compare">
@@ -444,13 +440,19 @@ body{
       <div class="res-top">
         <div class="res-verdict" id="rVerdict"></div>
         <div class="res-amount" id="rAmount"></div>
-        <div class="res-goal">두 공식 평균 예측 · 목표 <strong>$30</strong></div>
+        <div class="res-goal">두 공식 평균 예측 · 목표 <strong id="goalDisp">$30</strong></div>
       </div>
 
       <div class="gauge-wrap">
         <div class="gauge-head">
-          <span class="gauge-lbl">목표 달성률</span>
+          <span class="gauge-lbl">목표 달성 현황</span>
           <span class="gauge-pct" id="gPct"></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <label style="font-size:11px;color:var(--color-text-secondary);white-space:nowrap;">목표 금액 $</label>
+          <input type="number" id="goalInput" value="30" min="1" step="1"
+            style="width:80px;padding:4px 8px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);"
+            oninput="updateGoalDisplay()">
         </div>
         <div class="gauge-track">
           <div class="gauge-fill" id="gFill"></div>
@@ -465,14 +467,13 @@ body{
       </div>
 
       <div class="res-msg" id="rMsg"></div>
-    </div>
-
-    <div class="disclaimer">
-      예측은 39개 계정 데이터 분석 기반 · 실제 주급과 차이가 있을 수 있어요<br>
-      최수미 케이스($0) 포함 · 4주기 연속 데이터 반영 (v3)
+      <div id="rDisclaimer" style="display:none;font-size:0.68rem;color:var(--text3);text-align:center;padding:12px 20px;border-top:0.5px solid var(--border);line-height:1.7;">
+        X 수익 공식은 비공개예요. 이 계산기는 실제 정산 데이터를 역산한 추정값이라 실제 주급과 차이가 있을 수 있어요 🙏
+      </div>
     </div>
   </div>
 
+  
 </div>
 
 <script>
@@ -480,32 +481,22 @@ body{
 // 상수
 // ─────────────────────────────
 const GOAL    = 30;
-const SK      = 'xsalary_v3';
-const DEADLINE = new Date('2026-04-24T23:00:00Z');
+const SK      = 'xsalary_v1';
 
-// 공식 A 상수
+// 다음 정산 마감: 4/25 KST 08:00 = 4/24 UTC 23:00
+const DEADLINE = new Date('2026-04-25T00:00:00Z');
+
+// 공식 A 상수 (내 데이터 분석 기반 — 인증팔로워 비율·수익 효율 중심)
 const CPM_BASE   = 1.8;
 const FOL_W      = 0.004;
 const REPLY_W    = 0.0008;
 const ENG_PREM   = 0.18;
 const FIRST_K    = 0.5;
 
-// 노출 팔로잉 비율 → CPM 보정
-// 4주기 데이터 기반: 낮은 노출팔로잉 → 낮은 CPM but 노출 절대값이 압도
-// 단, 임계치 이하(1% 미만)에서 수익화 제외 위험
-function getFolImpCpmMult(folImpPct) {
-  if (folImpPct === null || folImpPct === undefined) return 1.0;
-  if (folImpPct < 1.0) return 0.70;   // 위험 구간 (최수미 케이스)
-  if (folImpPct < 2.0) return 0.85;   // 낮음 (4주기 1차/4차 ~1.0%)
-  if (folImpPct < 4.0) return 0.95;   // 보통 (4주기 2차/3차 ~2.2%)
-  if (folImpPct < 7.0) return 1.0;    // 일반 (39번 5.4%)
-  return 1.05;                         // 팔로워 충성도 높음
-}
-
 // ─────────────────────────────
 // State
 // ─────────────────────────────
-let method = 'full';
+let method = 'full'; // 'full' | 'simple'
 
 // ─────────────────────────────
 // 메서드 전환
@@ -543,83 +534,112 @@ setInterval(tick, 60000);
 // ─────────────────────────────
 // 인증팔로워 비율 배지
 // ─────────────────────────────
+function updateFollowBadge() {
+  const pct = +g('cImpFollow') || 0;
+  const badge = document.getElementById('followBadge');
+  if (!pct) { badge.className = 'ratio-badge'; return; }
+  const cls = pct <= 1.5 ? 'warn' : pct <= 3 ? '' : 'good';
+  const icon = pct <= 1.5 ? '🔥' : pct <= 3 ? '🔵' : '🟢';
+  const desc = pct <= 1.5 ? '바이럴 구조 — 수익 효율 희석 주의' : pct <= 3 ? '보통 수준' : '팔로워 탐라 노출 양호';
+  badge.className = `ratio-badge show ${cls}`;
+  badge.innerHTML = `${icon} 노출 팔로잉 <strong>${pct}%</strong> · ${desc}`;
+  save();
+}
+
 function updateRatio() {
   const tf = +g('cTf') || 0, vf = +g('cVf') || 0;
   const badge = document.getElementById('ratioBadge');
   if (!tf || !vf) { badge.className = 'ratio-badge'; return; }
   const pct = (vf / tf * 100).toFixed(1);
-  let cls, icon, desc;
-  if (pct >= 75) { cls='good'; icon='🟢'; desc='높음 — 수익 효율 유지 기대'; }
-  else if (pct >= 60) { cls=''; icon='🔵'; desc='보통'; }
-  else { cls='warn'; icon='🟡'; desc='낮음 — 수익 효율 주의'; }
+  const cls = pct >= 75 ? 'good' : pct >= 60 ? '' : 'warn';
+  const icon = pct >= 75 ? '🟢' : pct >= 60 ? '🔵' : '🟡';
+  const desc = pct >= 75 ? '높음 — 수익 효율 유지 기대' : pct >= 60 ? '보통' : '낮음 — 수익 효율 주의';
   badge.className = `ratio-badge show ${cls}`;
   badge.innerHTML = `${icon} 인증팔로워 비율 <strong>${pct}%</strong> · ${desc}`;
-}
-
-function updateAll() {
-  updateRatio();
   save();
 }
 
 // ─────────────────────────────
-// 공식 A — 수익 효율 기반
+// 공식 A — 수익 효율 기반 (내 분석)
+// model = (imp×CPM + vf×FOL_W + rep×REPLY_W) × (1 + eng×ENG_PREM)
 // ─────────────────────────────
 function modelA(imp, vf, rep, eng) {
   return ((imp * CPM_BASE) + (vf * FOL_W) + (rep * REPLY_W)) * (1 + eng * ENG_PREM);
 }
 
-function ratioMultA(tf, vf) {
+function ratioMultA(tf, vf, engage) {
   if (!tf || !vf) return 1.0;
   const p = vf / tf * 100;
-  return p >= 75 ? 1.15 : p >= 60 ? 1.0 : 0.88;
+  const engBonus = (engage && engage >= 500000) ? 0.05 : 0;
+  if (p >= 75) return 1.15 + engBonus;
+  if (p >= 60) return 1.0  + engBonus;
+  return 0.95 + engBonus;
 }
 
 // ─────────────────────────────
 // 공식 B — 참여 기반 (두됴지님)
+// model = ((rep/1000×21) + (imp×vf/1000)) × (eng/2)
 // ─────────────────────────────
 function modelB(imp, vf, rep, eng) {
   return ((rep / 1000 * 21) + (imp * vf / 1000)) * (eng / 2);
 }
 
-// ─────────────────────────────
-// 계산
-// ─────────────────────────────
-function calculate() {
-  const cImp  = +g('cImp')  || 0;
-  const cVf   = +g('cVf')   || 0;
-  const cTf   = +g('cTf')   || 0;
-  const cEng  = +g('cEng')  || 0;
-  const cRep  = +g('cRep')  || 0;
+// 노출 팔로잉 비율 보정 — 낮을수록(바이럴 구조) CPM 희석
+function impFollowMult(pct) {
+  if (!pct) return 1.0;
+  if (pct <= 1.0) return 0.70;
+  if (pct <= 2.0) return 0.82;
+  if (pct <= 4.0) return 0.92;
+  return 1.0;
+}
 
-  const folImpPct = g('cFolImpPct') !== '' ? parseFloat(g('cFolImpPct')) : null;
+function updateGoalDisplay() {
+  const goal = +document.getElementById('goalInput').value || 30;
+  document.getElementById('goalDisp').textContent = '$' + goal;
+}
+
+function calculate() {
+  const GOAL = +document.getElementById('goalInput').value || 30;
+  const cImp    = +g('cImp')    || 0;
+  const cVf     = +g('cVf')     || 0;
+  const cTf     = +g('cTf')     || 0;
+  const cEng    = +g('cEng')    || 0;
+  const cRep    = +g('cRep')    || 0;
+
+  const cEngage  = +g('cEngage') || 0;
+  const cImpFollow = +g('cImpFollow') || 0;
 
   if (!cImp && !cVf) {
     alert('현재 노출수 또는 인증된 팔로워를 입력해주세요!');
     return;
   }
 
-  // 노출 팔로잉 보정값
-  const folImpMult = getFolImpCpmMult(folImpPct);
-  // 인증팔로워 비율 보정
-  const rMult = ratioMultA(cTf, cVf);
+  const impFMult = impFollowMult(cImpFollow);
 
   // ── 공식 A 계산 ──
+  // rMult: 현재 주기 인증팔로워 비율 보정 (과거 역산에는 사용 안 함)
   let predA;
+  const rMult = ratioMultA(cTf, cVf, cEngage);
+
   if (method === 'full') {
     const pImp = +g('pImp') || 0, pVf = +g('pVf') || 0;
     const pRep = +g('pRep') || 0, pEng = +g('pEng') || 0;
     const pSal = +g('pSal') || 0;
     if (pImp > 0 && pSal > 0) {
+      // pastM은 rMult 없이 순수 모델값으로 ratio 역산
       const pastM = modelA(pImp, pVf, pRep, pEng);
+      const currM = modelA(cImp, cVf, cRep, cEng);
+      // ratio = 실제주급 / 과거모델값 → 계정 고유 수익 효율 계수
       const ratioA = Math.min(Math.max(pSal / pastM, 0.1), 5.0);
-      predA = modelA(cImp, cVf, cRep, cEng) * ratioA * rMult * folImpMult;
+      // 예측 = 현재모델 × ratio × 현재 인증비율 보정
+      predA = currM * ratioA * rMult * impFMult;
     } else {
-      predA = modelA(cImp, cVf, cRep, cEng) * rMult * folImpMult;
+      predA = modelA(cImp, cVf, cRep, cEng) * rMult * impFMult;
     }
   } else if (method === 'first') {
-    predA = modelA(cImp, cVf, cRep, cEng) * rMult * folImpMult * 0.35;
+    predA = modelA(cImp, cVf, cRep, cEng) * rMult * 0.35 * impFMult;
   } else {
-    predA = modelA(cImp, cVf, cRep, cEng) * rMult * folImpMult * FIRST_K;
+    predA = modelA(cImp, cVf, cRep, cEng) * rMult * FIRST_K * impFMult;
   }
 
   // ── 공식 B 계산 ──
@@ -631,42 +651,47 @@ function calculate() {
     if (pImp > 0 && pSal > 0) {
       const pastMB = modelB(pImp, pVf, pRep, pEng);
       const ratioB = pastMB > 0 ? Math.min(Math.max(pSal / pastMB, 0.05), 10) : 0.5;
-      predB = modelB(cImp, cVf, cRep, cEng) * ratioB * folImpMult;
+      predB = modelB(cImp, cVf, cRep, cEng) * ratioB * impFMult;
     } else {
-      predB = modelB(cImp, cVf, cRep, cEng) * 0.5 * folImpMult;
+      predB = modelB(cImp, cVf, cRep, cEng) * 0.5 * impFMult;
     }
   } else if (method === 'first') {
-    predB = modelB(cImp, cVf, cRep, cEng) * 0.35 * folImpMult;
+    predB = modelB(cImp, cVf, cRep, cEng) * 0.35 * impFMult;
   } else {
-    predB = modelB(cImp, cVf, cRep, cEng) * 0.5 * folImpMult;
+    predB = modelB(cImp, cVf, cRep, cEng) * 0.5 * impFMult;
   }
 
+  // ── 평균 ──
   const avg = (predA + predB) / 2;
   const pct = avg / GOAL * 100;
   const maxVal = Math.max(avg * 1.3, GOAL * 1.5);
+
+  // ── CPM 계산 ──
   const cpm = cImp > 0 ? avg / cImp : 0;
   const ratioDisp = cTf > 0 && cVf > 0 ? (cVf / cTf * 100).toFixed(1) : null;
-  const diff2 = Math.max(DEADLINE - new Date(), 0);
-  const daysLeft = Math.max(diff2 / 1000 / 3600 / 24, 1);
+
+  // 남은 기간
+  const diff = Math.max(DEADLINE - new Date(), 0);
+  const daysLeft = Math.max(diff / 1000 / 3600 / 24, 1);
   const gap = GOAL - avg;
   const perDay = Math.max(gap / daysLeft, 0);
-
-  // ── 수익화 제외 위험 체크 (최수미 케이스) ──
-  const exclusionRisk = folImpPct !== null && folImpPct < 1.5 && cImp < 10;
-  document.getElementById('exclusionWarn').classList.toggle('show', exclusionRisk);
 
   // ── 렌더 ──
   document.getElementById('resultWrap').classList.add('show');
 
+  // 공식 카드
   const aColor = predA >= GOAL ? 'green' : predA >= GOAL*0.8 ? 'yellow' : 'red';
   const bColor = predB >= GOAL ? 'green' : predB >= GOAL*0.8 ? 'yellow' : 'red';
   document.getElementById('fcAamt').textContent = `$${predA.toFixed(2)}`;
   document.getElementById('fcAamt').className = `f-amount ${aColor}`;
   document.getElementById('fcBamt').textContent = `$${predB.toFixed(2)}`;
   document.getElementById('fcBamt').className = `f-amount ${bColor}`;
+
+  // 더 신뢰도 높은 공식 하이라이트 (과거 데이터 있으면 둘 다, 없으면 B)
   document.getElementById('fcA').className = method === 'full' ? 'f-card highlight' : 'f-card';
   document.getElementById('fcB').className = 'f-card highlight';
 
+  // 종합
   let cls, verdict, vCls;
   if (avg >= GOAL) {
     cls='green'; verdict='🎉 최수미 탈출 가능!'; vCls='res-verdict escape';
@@ -680,6 +705,7 @@ function calculate() {
   document.getElementById('rAmount').className = `res-amount ${cls}`;
   document.getElementById('rAmount').textContent = `$${avg.toFixed(2)}`;
 
+  // 게이지
   const fillPct = Math.min(pct, 100);
   const goalPct = (GOAL / maxVal) * 100;
   const gf = document.getElementById('gFill');
@@ -687,31 +713,40 @@ function calculate() {
   gf.style.width = '0%';
   setTimeout(() => gf.style.width = fillPct + '%', 60);
   document.getElementById('gPct').className = `gauge-pct ${cls}`;
-  document.getElementById('gPct').textContent = `${Math.min(pct,999).toFixed(1)}%`;
+  document.getElementById('gPct').textContent = avg >= GOAL
+    ? `✓ $${avg.toFixed(0)} / $${GOAL} 달성!`
+    : `$${avg.toFixed(0)} / $${GOAL} (${pct.toFixed(0)}%)`;
   document.getElementById('gMarker').style.left = goalPct + '%';
   document.getElementById('gMax').textContent = `$${maxVal.toFixed(0)}`;
 
-  const cpmColor = cpm >= 10 ? 'green' : cpm >= 5 ? '' : 'red';
+  // 진단 카드
+  const ins = document.getElementById('insGrid');
   const diffAB = Math.abs(predA - predB).toFixed(2);
   const ratioStr = ratioDisp ? `${ratioDisp}%` : '미입력';
   const ratioClr = ratioDisp ? (ratioDisp >= 75 ? 'green' : ratioDisp >= 60 ? '' : 'red') : '';
-  const folImpApplied = folImpPct !== null;
+  const impFStr = cImpFollow ? `${cImpFollow}%` : '미입력';
+  const impFClr = cImpFollow ? (cImpFollow <= 1.5 ? 'red' : cImpFollow <= 3 ? '' : 'green') : '';
 
-  document.getElementById('insGrid').innerHTML = `
+  ins.innerHTML = `
     <div class="ins-card">
       <div class="ins-lbl">예상 범위</div>
       <div class="ins-val">$${Math.min(predA,predB).toFixed(0)}~$${Math.max(predA,predB).toFixed(0)}</div>
       <div class="ins-sub">두 공식 차이 $${diffAB}</div>
     </div>
     <div class="ins-card">
-      <div class="ins-lbl">노출당 수익 (CPM)</div>
-      <div class="ins-val ${cpmColor}">$${(avg / cImp * 1000000).toFixed(2)}</div>
-      <div class="ins-sub">1M 노출 기준${folImpApplied ? ' · 팔로잉 보정 적용' : ''}</div>
+      <div class="ins-lbl">노출당 수익 효율</div>
+      <div class="ins-val ${cpm >= 10 ? 'green' : cpm >= 6 ? '' : 'red'}">$${cpm.toFixed(2)}</div>
+      <div class="ins-sub">1M 노출당 수익</div>
     </div>
     <div class="ins-card">
       <div class="ins-lbl">인증팔로워 비율</div>
       <div class="ins-val ${ratioClr}">${ratioStr}</div>
-      <div class="ins-sub">${ratioDisp >= 75 ? '수익 효율 유지 👍' : ratioDisp >= 60 ? '보통 수준' : ratioDisp ? '수익 효율 주의 ⚠️' : '전체팔로워도 입력해주세요'}</div>
+      <div class="ins-sub">${ratioDisp >= 75 ? '수익 효율 유지 중 👍' : ratioDisp >= 60 ? '보통 수준' : ratioDisp ? '수익 효율 주의 ⚠️' : '전체팔로워도 입력해주세요'}</div>
+    </div>
+    <div class="ins-card">
+      <div class="ins-lbl">노출 팔로잉 비율</div>
+      <div class="ins-val ${impFClr}">${impFStr}</div>
+      <div class="ins-sub">${cImpFollow <= 1.5 && cImpFollow ? '바이럴 — 단가 희석 중' : cImpFollow <= 3 && cImpFollow ? '보통 수준' : cImpFollow ? '팔로워 탐라 노출 양호' : '오디언스 탭에서 확인'}</div>
     </div>
     <div class="ins-card">
       <div class="ins-lbl">하루 필요 수익</div>
@@ -720,6 +755,7 @@ function calculate() {
     </div>
   `;
 
+  // 메시지
   let msg = '';
   if (avg >= GOAL) {
     msg = `🎊 탈출 성공! <strong>$${(avg-GOAL).toFixed(2)}</strong> 더 버셨어요.`;
@@ -728,11 +764,13 @@ function calculate() {
   } else {
     msg = `😢 아직 $${gap.toFixed(2)} 부족해요.<br>인증팔로워와의 교류를 늘려보세요!`;
   }
-  if (method === 'first') msg += `<br><span style="font-size:0.74rem;color:var(--text2)">🐣 첫 주급은 실제와 차이가 클 수 있어요.</span>`;
-  if (ratioDisp && ratioDisp < 60) msg += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ 인증팔로워 비율 ${ratioDisp}% — 수익 효율 낮아지고 있어요</span>`;
-  if (exclusionRisk) msg += `<br><span style="color:var(--red);font-weight:700;font-size:0.75rem">🚨 수익화 제외 위험 — 노출 팔로잉 비율을 높여야 해요</span>`;
-
+  if (ratioDisp && ratioDisp < 60) {
+    msg += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ 인증팔로워 비율 ${ratioDisp}% — 수익 효율이 낮아지고 있어요</span>`;
+  }
+  if (method === 'first') msg += `<br><span style="font-size:0.74rem;color:var(--text2)">🐣 첫 주급은 실제와 차이가 클 수 있어요. 받은 후 기존 정산자 모드로 다시 계산해보세요!</span>`;
   document.getElementById('rMsg').innerHTML = msg;
+  document.getElementById('rDisclaimer').style.display = 'block';
+
   setTimeout(() => document.getElementById('resultWrap').scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
   save();
 }
@@ -740,7 +778,7 @@ function calculate() {
 // ─────────────────────────────
 // Storage
 // ─────────────────────────────
-const IDS = ['pImp','pVf','pRep','pEng','pSal','cImp','cVf','cTf','cEng','cRep','cEngage','cFolImpPct'];
+const IDS = ['pImp','pVf','pRep','pEng','pSal','cImp','cVf','cTf','cEng','cRep','cEngage','cImpFollow'];
 
 function save() {
   const d = { method };
@@ -753,8 +791,7 @@ function load() {
     const raw = localStorage.getItem(SK);
     if (!raw) return;
     const d = JSON.parse(raw);
-    if (d.method) setMethod(d.method);
-    IDS.forEach(id => { if (d[id] !== undefined && d[id] !== '') s(id, d[id]); });
+    if (d.method) setMethod(d.method);    IDS.forEach(id => { if (d[id] !== undefined && d[id] !== '') s(id, d[id]); });
     updateRatio();
   } catch(e) {}
 }
@@ -766,7 +803,6 @@ function clearAll() {
   setMethod('full');
   document.getElementById('resultWrap').classList.remove('show');
   document.getElementById('ratioBadge').className = 'ratio-badge';
-  document.getElementById('exclusionWarn').classList.remove('show');
 }
 
 const g = id => document.getElementById(id)?.value ?? '';
