@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>X 주급 계산기</title>
+<title>X 주급 계산기 v4.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -18,12 +18,32 @@
   --r:4px;--r-sm:4px;--r-lg:4px;
 }
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;min-height:100vh;padding-bottom:60px;-webkit-font-smoothing:antialiased;}
-.hero{padding:36px 24px 28px;text-align:center;border-bottom:1px solid var(--border);}
+
+/* ── 히어로 ── */
+.hero{padding:32px 24px 24px;text-align:center;border-bottom:1px solid var(--border);}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--red-soft);border:1px solid #ffd0c2;color:var(--red);font-size:0.7rem;font-weight:700;letter-spacing:0.06em;padding:4px 12px;border-radius:4px;margin-bottom:14px;text-transform:uppercase;}
 .hero h1{font-size:clamp(1.5rem,5.5vw,2rem);font-weight:800;letter-spacing:-0.025em;line-height:1.15;margin-bottom:8px;}
 .hero h1 em{color:var(--red);font-style:normal;}
 .hero p{font-size:0.8rem;color:var(--text2);line-height:1.7;}
 .hero-disc{margin-top:14px;display:inline-block;font-size:0.7rem;background:var(--yellow-soft);border:1px solid #f0d080;color:var(--yellow);padding:7px 14px;border-radius:4px;line-height:1.5;}
+
+/* ── 계정 선택 바 ── */
+.acc-bar{background:#f8f8fa;border-bottom:1px solid var(--border);padding:12px 18px 10px;}
+.acc-bar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.acc-bar-lbl{font-size:0.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.acc-mgr-btn{font-size:0.72rem;color:var(--blue);background:none;border:none;cursor:pointer;font-weight:700;font-family:inherit;padding:0;}
+.acc-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:3px;-ms-overflow-style:none;scrollbar-width:none;}
+.acc-chips::-webkit-scrollbar{display:none;}
+.acc-chip{background:var(--surface);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer;flex-shrink:0;transition:all 0.15s;text-align:left;}
+.acc-chip:hover{border-color:var(--border2);}
+.acc-chip.sel{border-color:var(--blue);background:var(--blue-soft);}
+.ac-name{display:block;font-size:0.78rem;font-weight:700;color:var(--text);white-space:nowrap;}
+.acc-chip.sel .ac-name{color:var(--blue);}
+.ac-sub{display:block;font-size:0.6rem;color:var(--text3);white-space:nowrap;}
+.acc-chip.add-chip{border-style:dashed;}
+.acc-chip.add-chip .ac-name{color:var(--text3);}
+
+/* ── 본문 ── */
 .method-wrap{max-width:580px;margin:0 auto;padding:20px 18px 0;}
 .method-tabs{display:grid;gap:8px;margin-bottom:20px;}
 .method-tab{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 12px;cursor:pointer;transition:all 0.18s;text-align:left;}
@@ -41,6 +61,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',-apple-sy
 .card-sub{font-size:0.68rem;color:var(--text3);margin-top:2px;}
 .note{font-size:0.73rem;line-height:1.6;background:var(--surface2);border-left:3px solid var(--border2);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:9px 11px;margin-bottom:14px;color:var(--text2);}
 .note.warn{border-left-color:var(--red);background:var(--red-soft);color:#a02c0c;}
+.note.blue{border-left-color:var(--blue);background:var(--blue-soft);color:#0055cc;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .field{margin-bottom:11px;}
 .field:last-child{margin-bottom:0;}
@@ -101,16 +122,55 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',-apple-sy
 .ins-val.red{color:var(--red);}.ins-val.green{color:var(--green);}
 .ins-sub{font-size:0.65rem;color:var(--text3);margin-top:2px;line-height:1.4;}
 .res-msg{padding:16px 20px;font-size:0.8rem;color:var(--text2);line-height:1.8;text-align:center;}
+
+/* ── 계정 관리 모달 ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.46);z-index:300;align-items:flex-end;}
+.overlay.open{display:flex;}
+.sheet{background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:20px 18px 60px;animation:sheetUp 0.26s ease;}
+@keyframes sheetUp{from{transform:translateY(50px);opacity:0.6}to{transform:translateY(0);opacity:1}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:sticky;top:0;background:var(--surface);padding-bottom:12px;border-bottom:1px solid var(--border);}
+.sheet-title{font-size:0.95rem;font-weight:800;}
+.close-btn{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:none;cursor:pointer;font-size:1rem;color:var(--text2);display:flex;align-items:center;justify-content:center;}
+.mgr-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);}
+.mgr-info{flex:1;min-width:0;}
+.mgr-name{font-size:0.85rem;font-weight:700;}
+.mgr-meta{font-size:0.62rem;color:var(--text3);margin-top:1px;}
+.mgr-sal{font-size:0.82rem;font-weight:700;color:var(--green);white-space:nowrap;margin-right:4px;}
+.mgr-btn{padding:5px 9px;font-size:0.65rem;font-family:inherit;border-radius:4px;cursor:pointer;white-space:nowrap;}
+.mgr-edit{background:var(--surface2);border:1px solid var(--border);color:var(--text2);}
+.mgr-del{background:var(--red-soft);border:1px solid #ffd0c2;color:var(--red);}
+.mgr-load{background:var(--blue-soft);border:1px solid #c2daf5;color:var(--blue);}
+
+/* 수정 폼 */
+.ef{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-top:14px;}
+.ef-head{font-size:0.82rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.ef-head .badge{font-size:0.6rem;background:var(--blue-soft);color:var(--blue);padding:2px 7px;border-radius:3px;}
+.ef-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.ef label{display:block;font-size:0.66rem;font-weight:700;color:var(--text2);margin-bottom:3px;}
+.ef input{width:100%;background:#fff;border:1.5px solid var(--border);border-radius:4px;padding:8px 10px;font-size:0.87rem;font-family:inherit;outline:none;transition:border-color 0.15s;}
+.ef input:focus{border-color:var(--blue);}
+.ef-sec{font-size:0.7rem;font-weight:700;color:var(--text2);margin:12px 0 8px;padding-top:12px;border-top:1px dashed var(--border);display:flex;align-items:center;gap:6px;}
+.ef-sec .opt{font-size:0.6rem;background:var(--surface);border:1px solid var(--border);color:var(--text3);padding:2px 6px;border-radius:3px;}
+.ef-actions{display:flex;gap:8px;margin-top:14px;}
+.ef-save{flex:1;background:var(--text);color:#fff;border:none;border-radius:var(--r);padding:12px;font-size:0.82rem;font-weight:700;font-family:inherit;cursor:pointer;}
+.ef-cancel{background:transparent;color:var(--text3);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 16px;font-size:0.82rem;font-family:inherit;cursor:pointer;}
+.add-acc-btn{width:100%;background:transparent;border:1.5px dashed var(--border);border-radius:var(--r);padding:13px;font-size:0.82rem;font-family:inherit;cursor:pointer;color:var(--text2);margin-top:14px;transition:all 0.15s;}
+.add-acc-btn:hover{border-color:var(--border2);color:var(--text);}
+
 .disclaimer{text-align:center;font-size:0.68rem;color:var(--text3);margin-top:24px;line-height:1.7;}
 </style>
 </head>
 <body>
+
+<!-- ── 히어로 ── -->
 <div class="hero">
-  <div class="hero-badge">X Creator Revenue</div>
+  <div class="hero-badge">X Creator Revenue · v4.1</div>
   <h1>주급 <em>계산기</em></h1>
   <p>두 가지 공식을 동시에 돌려서<br>예상 주급 범위를 알려드려요</p>
   <div class="hero-disc">⚠️ 실제 X 수익 공식은 비공개라서, 본 계산기 결과는 <b>추정치</b>예요. 실제 정산과 차이가 있을 수 있어요!</div>
 </div>
+
+<!-- ── 본문 ── -->
 <div class="method-wrap">
   <div style="font-size:0.72rem;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:0.04em;text-transform:uppercase;">나는 어떤 상황인가요?</div>
   <div class="method-tabs" style="grid-template-columns:1fr 1fr 1fr;">
@@ -128,28 +188,26 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',-apple-sy
     </div>
   </div>
 
-  <!-- 섹션 1: 과거 데이터 (다중주기 평균) -->
+  <!-- 섹션 1: 과거 데이터 -->
   <div class="card" id="sec-past">
     <div class="card-header">
       <div class="card-icon ci-orange">📌</div>
       <div>
         <div class="card-title">이전 정산 주기 데이터</div>
-        <div class="card-sub">최근 1~2회 입력 가능 — 두 회차 평균으로 ratio 안정화</div>
+        <div class="card-sub">계정 선택 시 자동 입력 — 최근 1~2회 입력 가능</div>
       </div>
     </div>
     <div class="note warn">과거 데이터를 넣을수록 내 계정에 맞는 예측값이 나와요. <b>2회차까지 입력하면</b> ratio가 평균화되어 더 안정적이에요!</div>
 
-    <!-- 1회차 -->
     <div style="font-size:0.72rem;font-weight:700;color:var(--blue);margin-bottom:8px;">📅 직전 회차 (필수)</div>
     <div class="grid2">
-      <div class="field"><label>노출수 (M) <span class="tip" data-tip="백만 단위 · 예: 7M → 7">?</span></label><input type="number" id="pImp" placeholder="예: 7" step="0.1"></div>
+      <div class="field"><label>노출수 (M)</label><input type="number" id="pImp" placeholder="예: 7" step="0.1"></div>
       <div class="field"><label>답글수 (개)</label><input type="number" id="pRep" placeholder="예: 2300"></div>
       <div class="field"><label>인증된 팔로워 (명)</label><input type="number" id="pVf" placeholder="예: 617"></div>
       <div class="field"><label>참여율 (%)</label><input type="number" id="pEng" placeholder="예: 7" step="0.1"></div>
     </div>
     <div class="field" style="margin-top:10px"><label>실제 받은 주급 ($)</label><input type="number" id="pSal" placeholder="예: 95.68" step="0.01"></div>
 
-    <!-- 2회차 (옵션, v3 신규) -->
     <div class="past-extra">
       <div class="past-extra-title">📅 두 회차 전 (선택) <span class="badge">v3 NEW</span></div>
       <div class="grid2">
@@ -205,6 +263,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',-apple-sy
   <button class="btn-calc" onclick="calculate()">예상 주급 계산하기 🚀</button>
   <button class="btn-sec" onclick="clearAll()">🗑️ 저장된 데이터 지우기</button>
 
+  <!-- 결과 -->
   <div class="result-wrap" id="resultWrap">
     <div class="formula-compare">
       <div class="f-card" id="fcA">
@@ -251,28 +310,285 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',-apple-sy
       </div>
     </div>
   </div>
-
+  <div class="disclaimer">Apr 25 – May 9, 2026 · 17개 계정 기반 상수 재보정 · v4.1</div>
 </div>
+
 
 <script>
 // ─────────────────────────────
-// v3 상수
+// v4.1 상수 — 17개 계정 Apr25~May9 데이터 기반 재보정
 // ─────────────────────────────
 const SK       = 'xsalary_v3';
+const ACC_SK   = 'xsalary_accounts_v1';
 const DEADLINE = (()=>{ const d=new Date(); d.setHours(9,0,0,0); const dow=d.getDay(); const off=((5-dow+7)%7)||14; d.setDate(d.getDate()+off); return d; })();
 
-// 공식 A 상수
-const CPM_BASE = 6.0;
+const CPM_BASE = 7.0;
 const FOL_W    = 0.025;
 const REPLY_W  = 0.0008;
-const ENG_PEN  = 0.10;
-const FIRST_K  = 0.5;
+const ENG_PEN  = 0.12;
+const FIRST_K  = 0.70;
+
+// ─────────────────────────────
+// 사전 등록 계정 (Apr25~May9 기준)
+// ─────────────────────────────
+const BUILTIN_ACCS = [
+  {id:'a1',name:'바자',   p1:{imp:14.8,vf:1600,tf:4900,eng:5.2,rep:3700,engage:781500,sal:214.73,impFollow:2.5}, p2:null},
+  {id:'a2',name:'약국',   p1:{imp:21.2,vf:1400,tf:1600,eng:7.3,rep:4100,engage:1500000,sal:170.75,impFollow:0.3}, p2:null},
+  {id:'a3',name:'긍정문', p1:{imp:5.3, vf:1600,tf:2700,eng:4.3,rep:2700,engage:230400, sal:142,   impFollow:1.8}, p2:null},
+  {id:'a4',name:'알감자', p1:{imp:19.4,vf:1400,tf:2200,eng:1.9,rep:4400,engage:389400, sal:111.89,impFollow:1.1}, p2:null},
+  {id:'a5',name:'하이딘', p1:{imp:9.8, vf:1200,tf:2400,eng:1.9,rep:1200,engage:187300, sal:89.47, impFollow:null}, p2:null},
+  {id:'a6',name:'이사벨', p1:{imp:2.9, vf:1500,tf:1900,eng:4.3,rep:3700,engage:127500, sal:50.64, impFollow:4.3}, p2:null},
+  {id:'a7',name:'옹새',   p1:{imp:5.9, vf:1500,tf:1900,eng:5.7,rep:6600,engage:342700, sal:46.11, impFollow:3.6}, p2:null},
+  {id:'a8',name:'해꼬',   p1:{imp:4.1, vf:1400,tf:2000,eng:1.4,rep:3500,engage:60700,  sal:36.52, impFollow:null}, p2:null},
+  {id:'b1',name:'계정01', p1:{imp:1.8, vf:1300,tf:3300,eng:9.1,rep:1300,engage:166700, sal:86.02, impFollow:null}, p2:null},
+  {id:'b2',name:'계정02', p1:{imp:10.9,vf:1400,tf:2700,eng:2.2,rep:3400,engage:246900, sal:70.35, impFollow:null}, p2:null},
+  {id:'b3',name:'계정03', p1:{imp:2.6, vf:2200,tf:3300,eng:1.2,rep:1700,engage:34000,  sal:167.04,impFollow:null}, p2:null},
+  {id:'b7',name:'계정07', p1:{imp:15.4,vf:1000,tf:1500,eng:3.0,rep:5000,engage:473300, sal:98.07, impFollow:null}, p2:null},
+  {id:'b8',name:'계정08', p1:{imp:44.9,vf:4700,tf:8400,eng:15, rep:17600,engage:6700000,sal:1622,  impFollow:null},
+                           p2:{imp:36.7,vf:4700,tf:8400,eng:10.4,rep:23300,engage:3800000,sal:2196, impFollow:null}},
+  {id:'b9',name:'계정09', p1:{imp:8.7, vf:1400,tf:2300,eng:4.1,rep:6600,engage:357400, sal:102.59,impFollow:null}, p2:null},
+  {id:'b10',name:'계정10',p1:{imp:14.4,vf:1500,tf:2600,eng:2.3,rep:3000,engage:339000, sal:133.94,impFollow:null}, p2:null},
+  {id:'b11',name:'계정11',p1:{imp:10.5,vf:3500,tf:8900,eng:3.9,rep:10200,engage:415600,sal:757.51,impFollow:null}, p2:null},
+  {id:'b12',name:'계정12',p1:{imp:17.5,vf:1700,tf:3300,eng:3.2,rep:2300,engage:566300, sal:225.83,impFollow:null}, p2:null},
+];
 
 // ─────────────────────────────
 // State
 // ─────────────────────────────
-let method = 'full';
+let method      = 'full';
+let accounts    = [];
+let activeAccId = null;
+let editingId   = null;
 
+// ─────────────────────────────
+// 계정 저장/불러오기
+// ─────────────────────────────
+function loadAccounts(){
+  try{
+    const raw = localStorage.getItem(ACC_SK);
+    if(raw){
+      const d = JSON.parse(raw);
+      accounts    = d.accounts || JSON.parse(JSON.stringify(BUILTIN_ACCS));
+      activeAccId = d.activeId || null;
+    } else {
+      accounts    = JSON.parse(JSON.stringify(BUILTIN_ACCS));
+      activeAccId = null;
+    }
+  } catch(e){
+    accounts    = JSON.parse(JSON.stringify(BUILTIN_ACCS));
+    activeAccId = null;
+  }
+  renderChips();
+}
+
+function saveAccounts(){
+  try{ localStorage.setItem(ACC_SK, JSON.stringify({accounts, activeId:activeAccId})); }catch(e){}
+}
+
+// ─────────────────────────────
+// 칩 렌더링
+// ─────────────────────────────
+function renderChips(){
+  const el = document.getElementById('accChips');
+  const html = accounts.map(a => {
+    const p = a.p1;
+    const authPct = (p.tf && p.vf) ? (p.vf/p.tf*100).toFixed(0)+'%' : '?';
+    const salStr  = p.sal != null ? '$'+p.sal : '?';
+    const isSel   = activeAccId === a.id;
+    return `<div class="acc-chip${isSel?' sel':''}" onclick="selectAcc('${a.id}')">
+      <span class="ac-name">${a.name}</span>
+      <span class="ac-sub">${salStr} · 인증${authPct}</span>
+    </div>`;
+  }).join('');
+  el.innerHTML = html + `<div class="acc-chip add-chip" onclick="openAdd()">
+    <span class="ac-name">＋ 추가</span>
+    <span class="ac-sub">새 계정</span>
+  </div>`;
+}
+
+// ─────────────────────────────
+// 계정 선택 → 폼 자동 입력
+// ─────────────────────────────
+function selectAcc(id){
+  const acc = accounts.find(a => a.id === id);
+  if(!acc) return;
+  activeAccId = id;
+
+  const p = acc.p1;
+  s('pImp', p.imp  ?? '');
+  s('pVf',  p.vf   ?? '');
+  s('pRep', p.rep  ?? '');
+  s('pEng', p.eng  ?? '');
+  s('pSal', p.sal  ?? '');
+
+  if(acc.p2){
+    const p2 = acc.p2;
+    s('p2Imp', p2.imp ?? '');
+    s('p2Vf',  p2.vf  ?? '');
+    s('p2Rep', p2.rep ?? '');
+    s('p2Eng', p2.eng ?? '');
+    s('p2Sal', p2.sal ?? '');
+  } else {
+    ['p2Imp','p2Vf','p2Rep','p2Eng','p2Sal'].forEach(id=>s(id,''));
+  }
+
+  // 현재 섹션 tf/vf도 팔로워 기준 채우기 (이미 입력된 경우 유지)
+  if(!g('cTf') && p.tf) s('cTf', p.tf);
+  if(!g('cVf') && p.vf) s('cVf', p.vf);
+  if(!g('cImpFollow') && p.impFollow) s('cImpFollow', p.impFollow);
+
+  // 안내 노트
+  const note = document.getElementById('accLoadNote');
+  const authPct = (p.tf && p.vf) ? (p.vf/p.tf*100).toFixed(1) : '?';
+  note.innerHTML = `✅ <b>${acc.name}</b> 계정 데이터 불러옴 — 직전 주급 <b>$${p.sal}</b> · 인증비율 <b>${authPct}%</b> · 아래 현재 주기 데이터를 입력하고 계산하세요!`;
+  note.style.display = 'block';
+
+  setMethod('full');
+  updateRatio();
+  updateFollowBadge();
+  saveAccounts();
+  renderChips();
+  save();
+}
+
+// ─────────────────────────────
+// 계정 관리 모달
+// ─────────────────────────────
+function openMgr(){
+  renderMgrList();
+  document.getElementById('mgrOverlay').classList.add('open');
+  document.getElementById('editForm').style.display = 'none';
+}
+function closeMgr(){
+  document.getElementById('mgrOverlay').classList.remove('open');
+  editingId = null;
+}
+function overlayClick(e){
+  if(e.target === document.getElementById('mgrOverlay')) closeMgr();
+}
+
+function renderMgrList(){
+  const el = document.getElementById('mgrList');
+  if(!accounts.length){ el.innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--text3);font-size:0.8rem">등록된 계정이 없어요</div>'; return; }
+  el.innerHTML = accounts.map(a => {
+    const p = a.p1;
+    const auth = (p.tf && p.vf) ? (p.vf/p.tf*100).toFixed(0)+'%' : '?';
+    const sal  = p.sal != null ? '$'+p.sal : '미확인';
+    return `<div class="mgr-row">
+      <div class="mgr-info">
+        <div class="mgr-name">${a.name}</div>
+        <div class="mgr-meta">인증 ${auth} · 노출 ${p.imp ?? '?'}M · Apr25~May9</div>
+      </div>
+      <div class="mgr-sal">${sal}</div>
+      <button class="mgr-btn mgr-load" onclick="selectAcc('${a.id}');closeMgr()">불러오기</button>
+      <button class="mgr-btn mgr-edit" onclick="openEdit('${a.id}')">수정</button>
+      <button class="mgr-btn mgr-del" onclick="delAcc('${a.id}')">삭제</button>
+    </div>`;
+  }).join('');
+}
+
+function openEdit(id){
+  editingId = id;
+  const acc = accounts.find(a => a.id === id);
+  if(!acc) return;
+
+  document.getElementById('efTitle').childNodes[0].textContent = '계정 수정 ';
+  document.getElementById('efBadge').textContent = acc.name;
+  document.getElementById('efName').value = acc.name;
+
+  const p = acc.p1;
+  document.getElementById('efImp').value       = p.imp ?? '';
+  document.getElementById('efVf').value        = p.vf  ?? '';
+  document.getElementById('efTf').value        = p.tf  ?? '';
+  document.getElementById('efEng').value       = p.eng ?? '';
+  document.getElementById('efRep').value       = p.rep ?? '';
+  document.getElementById('efEngage').value    = p.engage ?? '';
+  document.getElementById('efImpFollow').value = p.impFollow ?? '';
+  document.getElementById('efSal').value       = p.sal ?? '';
+
+  const p2 = acc.p2;
+  document.getElementById('ef2Imp').value = p2?.imp ?? '';
+  document.getElementById('ef2Vf').value  = p2?.vf  ?? '';
+  document.getElementById('ef2Eng').value = p2?.eng ?? '';
+  document.getElementById('ef2Rep').value = p2?.rep ?? '';
+  document.getElementById('ef2Sal').value = p2?.sal ?? '';
+
+  const ef = document.getElementById('editForm');
+  ef.style.display = 'block';
+  ef.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function openAdd(){
+  editingId = null;
+  document.getElementById('efTitle').childNodes[0].textContent = '새 계정 추가 ';
+  document.getElementById('efBadge').textContent = 'NEW';
+  document.getElementById('efName').value = '';
+  ['efImp','efVf','efTf','efEng','efRep','efEngage','efImpFollow','efSal',
+   'ef2Imp','ef2Vf','ef2Eng','ef2Rep','ef2Sal'].forEach(i => { const el=document.getElementById(i); if(el) el.value=''; });
+  openMgr();
+  const ef = document.getElementById('editForm');
+  ef.style.display = 'block';
+  setTimeout(()=>ef.scrollIntoView({behavior:'smooth',block:'nearest'}), 200);
+}
+
+function cancelEdit(){
+  document.getElementById('editForm').style.display = 'none';
+  editingId = null;
+}
+
+function saveEdit(){
+  const name = document.getElementById('efName').value.trim();
+  if(!name){ alert('계정 이름을 입력해주세요.'); return; }
+
+  const pf = id => { const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; };
+  const pi = id => { const v=parseInt(document.getElementById(id).value);   return isNaN(v)?null:v; };
+
+  const p1 = {
+    imp:       pf('efImp'),
+    vf:        pi('efVf'),
+    tf:        pi('efTf'),
+    eng:       pf('efEng'),
+    rep:       pi('efRep'),
+    engage:    pi('efEngage'),
+    impFollow: pf('efImpFollow'),
+    sal:       pf('efSal'),
+  };
+  const p2imp = pf('ef2Imp');
+  const p2 = p2imp != null ? {
+    imp: p2imp,
+    vf:  pi('ef2Vf'),
+    eng: pf('ef2Eng'),
+    rep: pi('ef2Rep'),
+    sal: pf('ef2Sal'),
+  } : null;
+
+  if(editingId){
+    const idx = accounts.findIndex(a => a.id === editingId);
+    if(idx >= 0) accounts[idx] = {...accounts[idx], name, p1, p2};
+  } else {
+    accounts.push({id:'u'+Date.now(), name, p1, p2});
+  }
+
+  saveAccounts();
+  renderChips();
+  renderMgrList();
+  cancelEdit();
+}
+
+function delAcc(id){
+  const acc = accounts.find(a => a.id === id);
+  if(!acc) return;
+  if(!confirm(`"${acc.name}" 계정을 삭제할까요?`)) return;
+  accounts = accounts.filter(a => a.id !== id);
+  if(activeAccId === id){ activeAccId = null; document.getElementById('accLoadNote').style.display='none'; }
+  saveAccounts();
+  renderChips();
+  renderMgrList();
+}
+
+// ─────────────────────────────
+// 메서드 / 카운트다운
+// ─────────────────────────────
 function setMethod(m){
   method = m;
   document.getElementById('tabFull').classList.toggle('on', m==='full');
@@ -282,13 +598,11 @@ function setMethod(m){
   save();
 }
 
-// 카운트다운
 function tick(){
   const diff = DEADLINE - new Date();
-  if (diff<=0){ document.getElementById('daysDisp').textContent='0'; document.getElementById('daysLabel').textContent='마감됐어요'; return; }
-  const totalSec = Math.floor(diff/1000);
-  const d = Math.floor(totalSec/86400);
-  const h = Math.floor((totalSec%86400)/3600);
+  if(diff<=0){ document.getElementById('daysDisp').textContent='0'; document.getElementById('daysLabel').textContent='마감됐어요'; return; }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
   const disp = document.getElementById('daysDisp');
   disp.textContent = d;
   disp.style.color = d<=2 ? 'var(--red)' : 'var(--text)';
@@ -296,57 +610,70 @@ function tick(){
 }
 tick(); setInterval(tick, 60000);
 
+// ─────────────────────────────
 // 배지
+// ─────────────────────────────
 function updateFollowBadge(){
   const pct = +g('cImpFollow') || 0;
   const badge = document.getElementById('followBadge');
-  if (!pct){ badge.className='ratio-badge'; return; }
+  if(!pct){ badge.className='ratio-badge'; return; }
   let cls, icon, desc;
-  if (pct<=1){ cls='warn'; icon='🟡'; desc='바이럴 구조 — CPM 다소 희석'; }
-  else if (pct<=2){ cls=''; icon='🔵'; desc='보통 수준'; }
-  else { cls='good'; icon='🟢'; desc='팔로워 탐라 노출 양호'; }
+  if(pct<=1.0){      cls='warn'; icon='🟡'; desc='바이럴 구조 — CPM 희석 (×0.82)'; }
+  else if(pct<=2.0){ cls='';     icon='🔵'; desc='보통 수준 (×0.92)'; }
+  else if(pct<=4.0){ cls='good'; icon='🟢'; desc='팔로워 탐라 노출 양호 (×1.10)'; }
+  else {             cls='warn'; icon='🟠'; desc='팔로잉 과다 — 신규 유입 주의 (×0.90)'; }
   badge.className = `ratio-badge show ${cls}`;
   badge.innerHTML = `${icon} 노출 팔로잉 <strong>${pct}%</strong> · ${desc}`;
   save();
 }
+
 function updateRatio(){
   const tf=+g('cTf')||0, vf=+g('cVf')||0;
   const badge=document.getElementById('ratioBadge');
-  if (!tf||!vf){ badge.className='ratio-badge'; return; }
+  if(!tf||!vf){ badge.className='ratio-badge'; return; }
   const pct = (vf/tf*100).toFixed(1);
   let cls, icon, desc;
-  if (pct>=80){ cls='good'; icon='🟢'; desc='최상 — 수익 효율 유지 기대'; }
-  else if (pct>=60){ cls=''; icon='🔵'; desc='보통 수준'; }
-  else { cls='warn'; icon='🟡'; desc='낮음 — 수익 효율 주의'; }
+  if(pct>=80){       cls='good'; icon='🟢'; desc='최상 — 수익 효율 최대 (×1.10)'; }
+  else if(pct>=60){  cls='';     icon='🔵'; desc='양호 (×1.05)'; }
+  else if(pct>=40){  cls='warn'; icon='🟡'; desc='보통 (×0.95)'; }
+  else {             cls='warn'; icon='🔴'; desc='낮음 — 효율 감소 (×0.90)'; }
   badge.className = `ratio-badge show ${cls}`;
   badge.innerHTML = `${icon} 인증팔로워 비율 <strong>${pct}%</strong> · ${desc}`;
   save();
 }
 
-// 공식 A (v3)
+// ─────────────────────────────
+// 공식
+// ─────────────────────────────
 function modelA(imp, vf, rep, eng){
   const base = (imp*CPM_BASE) + (vf*FOL_W) + (rep*REPLY_W);
-  const engMult = Math.max(0.65, 1 - Math.max(0, eng-5)*ENG_PEN);
+  const engMult = Math.max(0.70, 1 - Math.max(0, eng-5)*ENG_PEN);
   return base * engMult;
 }
 function ratioMultA(tf, vf, engage){
-  if (!tf||!vf) return 1.0;
+  if(!tf||!vf) return 1.0;
   const p = vf/tf*100;
-  const eb = (engage && engage>=500000) ? 0.05 : 0;
-  if (p>=80) return 1.15+eb;
-  if (p>=60) return 1.10+eb;
-  return 0.85+eb;
+  if(p>=80) return 1.10;
+  if(p>=60) return 1.05;
+  if(p>=40) return 0.95;
+  return 0.90;
 }
 function impFollowMult(pct){
-  if (!pct) return 1.0;
-  if (pct<=1.0) return 0.85;
-  if (pct<=2.0) return 0.92;
-  return 1.20;
+  if(!pct) return 1.0;
+  if(pct<=1.0) return 0.82;
+  if(pct<=2.0) return 0.92;
+  if(pct<=4.0) return 1.10;
+  return 0.90;
 }
-
-// 공식 B — 두됴지님 공식 (구조 유지)
 function modelB(imp, vf, rep, eng){
   return ((rep/1000*21) + (imp*vf/1000)) * (eng/2);
+}
+
+function pastRatio(modelFn, period){
+  if(!period.imp || !period.sal) return null;
+  const pred = modelFn(period.imp, period.vf||0, period.rep||0, period.eng||0);
+  if(pred<=0) return null;
+  return Math.min(Math.max(period.sal/pred, 0.05), 10);
 }
 
 function updateGoalDisplay(){
@@ -354,41 +681,33 @@ function updateGoalDisplay(){
   document.getElementById('goalDisp').textContent = '$'+goal;
 }
 
-// 다중주기 ratio 평균
-function pastRatio(modelFn, period){
-  // period: {imp, vf, rep, eng, sal}
-  if (!period.imp || !period.sal) return null;
-  const pred = modelFn(period.imp, period.vf, period.rep, period.eng);
-  if (pred<=0) return null;
-  return Math.min(Math.max(period.sal/pred, 0.05), 10);
-}
-
+// ─────────────────────────────
+// 계산
+// ─────────────────────────────
 function calculate(){
   const GOAL = +document.getElementById('goalInput').value || 30;
   const cImp=+g('cImp')||0, cVf=+g('cVf')||0, cTf=+g('cTf')||0;
   const cEng=+g('cEng')||0, cRep=+g('cRep')||0;
   const cEngage=+g('cEngage')||0, cImpFollow=+g('cImpFollow')||0;
 
-  if (!cImp && !cVf){ alert('현재 노출수 또는 인증된 팔로워를 입력해주세요!'); return; }
+  if(!cImp && !cVf){ alert('현재 노출수 또는 인증된 팔로워를 입력해주세요!'); return; }
 
   const impFMult = impFollowMult(cImpFollow);
+  const rMult    = ratioMultA(cTf, cVf, cEngage);
 
   // 공식 A
   let predA;
-  const rMult = ratioMultA(cTf, cVf, cEngage);
-  if (method==='full'){
+  if(method==='full'){
     const p1 = {imp:+g('pImp')||0, vf:+g('pVf')||0, rep:+g('pRep')||0, eng:+g('pEng')||0, sal:+g('pSal')||0};
     const p2 = {imp:+g('p2Imp')||0, vf:+g('p2Vf')||0, rep:+g('p2Rep')||0, eng:+g('p2Eng')||0, sal:+g('p2Sal')||0};
-    const r1 = pastRatio(modelA, p1);
-    const r2 = pastRatio(modelA, p2);
-    const ratios = [r1, r2].filter(x=>x!=null);
-    if (ratios.length>0){
-      const ratioA = ratios.reduce((a,b)=>a+b,0)/ratios.length;  // v3: 평균
+    const ratios = [pastRatio(modelA,p1), pastRatio(modelA,p2)].filter(x=>x!=null);
+    if(ratios.length>0){
+      const ratioA = ratios.reduce((a,b)=>a+b,0)/ratios.length;
       predA = modelA(cImp,cVf,cRep,cEng) * ratioA * rMult * impFMult;
     } else {
       predA = modelA(cImp,cVf,cRep,cEng) * rMult * impFMult;
     }
-  } else if (method==='first'){
+  } else if(method==='first'){
     predA = modelA(cImp,cVf,cRep,cEng) * rMult * 0.35 * impFMult;
   } else {
     predA = modelA(cImp,cVf,cRep,cEng) * rMult * FIRST_K * impFMult;
@@ -396,32 +715,30 @@ function calculate(){
 
   // 공식 B
   let predB;
-  if (method==='full'){
+  if(method==='full'){
     const p1 = {imp:+g('pImp')||0, vf:+g('pVf')||0, rep:+g('pRep')||0, eng:+g('pEng')||0, sal:+g('pSal')||0};
     const p2 = {imp:+g('p2Imp')||0, vf:+g('p2Vf')||0, rep:+g('p2Rep')||0, eng:+g('p2Eng')||0, sal:+g('p2Sal')||0};
-    const r1 = pastRatio(modelB, p1);
-    const r2 = pastRatio(modelB, p2);
-    const ratios = [r1, r2].filter(x=>x!=null);
-    if (ratios.length>0){
+    const ratios = [pastRatio(modelB,p1), pastRatio(modelB,p2)].filter(x=>x!=null);
+    if(ratios.length>0){
       const ratioB = ratios.reduce((a,b)=>a+b,0)/ratios.length;
       predB = modelB(cImp,cVf,cRep,cEng) * ratioB * impFMult;
     } else {
       predB = modelB(cImp,cVf,cRep,cEng) * 0.5 * impFMult;
     }
-  } else if (method==='first'){
+  } else if(method==='first'){
     predB = modelB(cImp,cVf,cRep,cEng) * 0.35 * impFMult;
   } else {
     predB = modelB(cImp,cVf,cRep,cEng) * 0.5 * impFMult;
   }
 
-  const avg = (predA+predB)/2;
-  const pct = avg/GOAL*100;
+  const avg    = (predA+predB)/2;
+  const pct    = avg/GOAL*100;
   const maxVal = Math.max(avg*1.3, GOAL*1.5);
-  const cpm = cImp>0 ? avg/cImp : 0;
+  const cpm    = cImp>0 ? avg/cImp : 0;
   const ratioDisp = cTf>0 && cVf>0 ? (cVf/cTf*100).toFixed(1) : null;
-  const diff = Math.max(DEADLINE - new Date(), 0);
+  const diff   = Math.max(DEADLINE - new Date(), 0);
   const daysLeft = Math.max(diff/1000/3600/24, 1);
-  const gap = GOAL - avg;
+  const gap    = GOAL - avg;
   const perDay = Math.max(gap/daysLeft, 0);
 
   document.getElementById('resultWrap').classList.add('show');
@@ -429,16 +746,16 @@ function calculate(){
   const aColor = predA>=GOAL ? 'green' : predA>=GOAL*0.8 ? 'yellow' : 'red';
   const bColor = predB>=GOAL ? 'green' : predB>=GOAL*0.8 ? 'yellow' : 'red';
   document.getElementById('fcAamt').textContent = `$${predA.toFixed(2)}`;
-  document.getElementById('fcAamt').className = `f-amount ${aColor}`;
+  document.getElementById('fcAamt').className   = `f-amount ${aColor}`;
   document.getElementById('fcBamt').textContent = `$${predB.toFixed(2)}`;
-  document.getElementById('fcBamt').className = `f-amount ${bColor}`;
+  document.getElementById('fcBamt').className   = `f-amount ${bColor}`;
   document.getElementById('fcA').className = method==='full' ? 'f-card highlight' : 'f-card';
   document.getElementById('fcB').className = 'f-card highlight';
 
   let cls, verdict, vCls;
-  if (avg>=GOAL){ cls='green'; verdict='🎉 최수미 탈출 가능!'; vCls='res-verdict escape'; }
-  else if (avg>=GOAL*0.8){ cls='yellow'; verdict='⚡ 아슬아슬...'; vCls='res-verdict close'; }
-  else { cls='red'; verdict='😭 최수미 탈출 실패'; vCls='res-verdict fail'; }
+  if(avg>=GOAL){      cls='green';  verdict='🎉 최수미 탈출 가능!'; vCls='res-verdict escape'; }
+  else if(avg>=GOAL*0.8){ cls='yellow'; verdict='⚡ 아슬아슬...';   vCls='res-verdict close'; }
+  else {              cls='red';    verdict='😭 최수미 탈출 실패'; vCls='res-verdict fail'; }
 
   document.getElementById('rVerdict').className = vCls;
   document.getElementById('rVerdict').textContent = verdict;
@@ -450,7 +767,7 @@ function calculate(){
   const gf = document.getElementById('gFill');
   gf.className = `gauge-fill ${cls}`;
   gf.style.width = '0%';
-  setTimeout(()=>gf.style.width = fillPct+'%', 60);
+  setTimeout(()=>gf.style.width=fillPct+'%', 60);
   document.getElementById('gPct').className = `gauge-pct ${cls}`;
   document.getElementById('gPct').textContent = avg>=GOAL
     ? `✓ $${avg.toFixed(0)} / $${GOAL} 달성!`
@@ -459,57 +776,86 @@ function calculate(){
   document.getElementById('gMax').textContent = `$${maxVal.toFixed(0)}`;
 
   const ins = document.getElementById('insGrid');
-  const diffAB = Math.abs(predA-predB).toFixed(2);
+  const diffAB   = Math.abs(predA-predB).toFixed(2);
   const ratioStr = ratioDisp ? `${ratioDisp}%` : '미입력';
-  const ratioClr = ratioDisp ? (ratioDisp>=80 ? 'green' : ratioDisp>=60 ? '' : 'red') : '';
-  const impFStr = cImpFollow ? `${cImpFollow}%` : '미입력';
-  const impFClr = cImpFollow ? (cImpFollow>2 ? 'green' : cImpFollow<=1 ? 'red' : '') : '';
+  const ratioClr = ratioDisp ? (ratioDisp>=80 ? 'green' : ratioDisp>=60 ? '' : ratioDisp>=40 ? '' : 'red') : '';
+  const ratioSub = ratioDisp>=80 ? '최상 👑 (×1.10)' : ratioDisp>=60 ? '양호 (×1.05)' : ratioDisp>=40 ? '보통 (×0.95)' : ratioDisp ? '낮음 🚨 (×0.90)' : '전체팔로워도 입력';
+  const impFStr  = cImpFollow ? `${cImpFollow}%` : '미입력';
+  const impFClr  = cImpFollow ? (cImpFollow>4 ? '' : cImpFollow>2 ? 'green' : cImpFollow<=1 ? 'red' : '') : '';
+  const impFSub  = cImpFollow<=1&&cImpFollow ? '바이럴 — 단가 희석 (×0.82)' : cImpFollow<=2&&cImpFollow ? '보통 (×0.92)' : cImpFollow<=4&&cImpFollow ? '팔로워 노출 양호 (×1.10)' : cImpFollow ? '팔로잉 과다 주의 (×0.90)' : '오디언스 탭에서 확인';
+
   ins.innerHTML = `
     <div class="ins-card"><div class="ins-lbl">예상 범위</div><div class="ins-val">$${Math.min(predA,predB).toFixed(0)}~$${Math.max(predA,predB).toFixed(0)}</div><div class="ins-sub">두 공식 차이 $${diffAB}</div></div>
     <div class="ins-card"><div class="ins-lbl">노출당 수익 효율(CPM)</div><div class="ins-val ${cpm>=15?'green':cpm>=8?'':'red'}">$${cpm.toFixed(2)}</div><div class="ins-sub">1M 노출당 수익 추정</div></div>
-    <div class="ins-card"><div class="ins-lbl">인증팔로워 비율</div><div class="ins-val ${ratioClr}">${ratioStr}</div><div class="ins-sub">${ratioDisp>=80?'최상 👑':ratioDisp>=60?'보통':ratioDisp?'주의 ⚠️':'전체팔로워도 입력'}</div></div>
-    <div class="ins-card"><div class="ins-lbl">노출 팔로잉 비율</div><div class="ins-val ${impFClr}">${impFStr}</div><div class="ins-sub">${cImpFollow&&cImpFollow<=1?'바이럴 — 단가 희석':cImpFollow<=2&&cImpFollow?'보통 수준':cImpFollow?'팔로워 탐라 노출 양호':'오디언스 탭에서 확인'}</div></div>
+    <div class="ins-card"><div class="ins-lbl">인증팔로워 비율</div><div class="ins-val ${ratioClr}">${ratioStr}</div><div class="ins-sub">${ratioSub}</div></div>
+    <div class="ins-card"><div class="ins-lbl">노출 팔로잉 비율</div><div class="ins-val ${impFClr}">${impFStr}</div><div class="ins-sub">${impFSub}</div></div>
     <div class="ins-card"><div class="ins-lbl">하루 필요 수익</div><div class="ins-val ${gap>0?'red':'green'}">${gap>0?'$'+perDay.toFixed(2):'달성!'}</div><div class="ins-sub">${Math.floor(daysLeft)}일 남은 기준</div></div>
   `;
 
   let msg = '';
-  if (avg>=GOAL){ msg = `🎊 탈출 성공! <strong>$${(avg-GOAL).toFixed(2)}</strong> 더 버셨어요.`; }
-  else if (avg>=GOAL*0.8){ msg = `💦 아슬아슬! 하루 <strong>$${perDay.toFixed(2)}</strong>씩만 더 채워요.`; }
+  if(avg>=GOAL){ msg = `🎊 탈출 성공! <strong>$${(avg-GOAL).toFixed(2)}</strong> 더 버셨어요.`; }
+  else if(avg>=GOAL*0.8){ msg = `💦 아슬아슬! 하루 <strong>$${perDay.toFixed(2)}</strong>씩만 더 채워요.`; }
   else { msg = `😢 아직 $${gap.toFixed(2)} 부족해요.<br>인증팔로워와의 교류를 늘려보세요!`; }
-  if (ratioDisp && ratioDisp<60){ msg += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ 인증팔로워 비율 ${ratioDisp}% — 수익 효율이 낮아지고 있어요</span>`; }
-  if (cEng>8){ msg += `<br><span style="color:var(--yellow);font-size:0.75rem">참여율 ${cEng}% — 너무 높으면 오히려 단가가 떨어질 수 있어요</span>`; }
-  if (method==='first') msg += `<br><span style="font-size:0.74rem;color:var(--text2)">🐣 첫 주급은 실제와 차이가 클 수 있어요. 받은 후 기존 정산자 모드로 다시 계산해보세요!</span>`;
+  if(ratioDisp && ratioDisp<40){ msg += `<br><span style="color:var(--red);font-size:0.75rem">🚨 인증팔로워 비율 ${ratioDisp}% — 단가 절반 수준 위험 구간이에요 (×0.60 적용)</span>`; }
+  else if(ratioDisp && ratioDisp<60){ msg += `<br><span style="color:var(--red);font-size:0.75rem">⚠️ 인증팔로워 비율 ${ratioDisp}% — 수익 효율이 낮아지고 있어요 (×0.75 적용)</span>`; }
+  if(cEng>6){ msg += `<br><span style="color:var(--yellow);font-size:0.75rem">참여율 ${cEng}% — 5% 스윗스팟 초과, 높은 참여율은 오히려 단가가 떨어질 수 있어요 (r=−0.52)</span>`; }
+  if(method==='first') msg += `<br><span style="font-size:0.74rem;color:var(--text2)">🐣 첫 주급은 실제와 차이가 클 수 있어요. 받은 후 기존 정산자 모드로 다시 계산해보세요!</span>`;
   document.getElementById('rMsg').innerHTML = msg;
-  document.getElementById('rDisclaimer').style.display = 'block';
+  document.getElementById('rDisclaimer').style.display='block';
   setTimeout(()=>document.getElementById('resultWrap').scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
   save();
 }
 
-// Storage
+// ─────────────────────────────
+// 폼 저장
+// ─────────────────────────────
 const IDS = ['pImp','pVf','pRep','pEng','pSal','p2Imp','p2Vf','p2Rep','p2Eng','p2Sal','cImp','cVf','cTf','cEng','cRep','cEngage','cImpFollow'];
-function save(){ const d={method}; IDS.forEach(id=>d[id]=g(id)); try{localStorage.setItem(SK, JSON.stringify(d));}catch(e){} }
+function save(){
+  const d={method, activeAccId};
+  IDS.forEach(id=>d[id]=g(id));
+  try{localStorage.setItem(SK, JSON.stringify(d));}catch(e){}
+}
 function load(){
   try{
     const raw = localStorage.getItem(SK);
-    if (!raw) return;
+    if(!raw) return;
     const d = JSON.parse(raw);
-    if (d.method) setMethod(d.method);
-    IDS.forEach(id=>{ if (d[id]!==undefined && d[id]!=='') s(id, d[id]); });
+    if(d.method) setMethod(d.method);
+    IDS.forEach(id=>{ if(d[id]!==undefined && d[id]!=='') s(id, d[id]); });
+    if(d.activeAccId) activeAccId = d.activeAccId;
     updateRatio(); updateFollowBadge();
+    if(activeAccId){
+      const acc = accounts.find(a=>a.id===activeAccId);
+      if(acc){
+        const note = document.getElementById('accLoadNote');
+        const p = acc.p1;
+        const authPct = (p.tf&&p.vf)?(p.vf/p.tf*100).toFixed(1):'?';
+        note.innerHTML = `✅ <b>${acc.name}</b> 계정 불러옴 — 직전 주급 <b>$${p.sal}</b> · 인증비율 <b>${authPct}%</b>`;
+        note.style.display = 'block';
+      }
+    }
+    renderChips();
   }catch(e){}
 }
 function clearAll(){
-  if (!confirm('저장된 데이터를 모두 지울까요?')) return;
+  if(!confirm('저장된 데이터를 모두 지울까요?')) return;
   try{localStorage.removeItem(SK);}catch(e){}
-  IDS.forEach(id=>s(id, ''));
+  IDS.forEach(id=>s(id,''));
   setMethod('full');
+  activeAccId = null;
   document.getElementById('resultWrap').classList.remove('show');
   document.getElementById('ratioBadge').className='ratio-badge';
   document.getElementById('followBadge').className='ratio-badge';
+  document.getElementById('accLoadNote').style.display='none';
+  renderChips();
 }
 const g = id => document.getElementById(id)?.value ?? '';
-const s = (id, v) => { const el=document.getElementById(id); if (el) el.value=v; };
+const s = (id, v) => { const el=document.getElementById(id); if(el) el.value=v; };
 document.querySelectorAll('input[type=number]').forEach(el=>el.addEventListener('input', save));
+
+// ─────────────────────────────
+// 초기화
+// ─────────────────────────────
 load();
 </script>
 </body>
